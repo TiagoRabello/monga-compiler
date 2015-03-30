@@ -1,4 +1,4 @@
-1. Prerequisitos
+1. Pré-requisitos:
   * make
   * flex (ou equivalente que deve ser definido no Makefile como LEX)
   * gcc  (ou equivalente que deve ser definido no Makefile como CC)
