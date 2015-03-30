@@ -5,8 +5,8 @@
   * diff (ou equivalente que deve ser definido no Makefile como DIFF)
 
 2. Comandos do Makefile:
-  * test_scanner  : Roda todos os testes referentes ao analizador léxico.
-  * monga_scanner : Gera o arquivo de objeto referente ao analizador léxico.
+  * test_scanner  : Roda todos os testes referentes ao analisador léxico.
+  * monga_scanner : Gera o arquivo de objeto referente ao analisador léxico.
   * clean         : Remove todos os arquivos gerados pelo make.
 
 3. Estrutura do projeto:
