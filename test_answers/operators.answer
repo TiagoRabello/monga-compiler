@@ -1,0 +1,23 @@
+<TK_INT_T> <TK_ID>[main]()
+{
+  <TK_INT_T> <TK_ID>[a] = <TK_INT_LITERAL>[0];
+
+  -<TK_ID>[a];
+  +<TK_ID>[a];
+
+  <TK_ID>[a] = <TK_ID>[a] + <TK_INT_LITERAL>[1];
+  <TK_ID>[a] = <TK_ID>[a] - <TK_INT_LITERAL>[1];
+  <TK_ID>[a] = <TK_ID>[a] * <TK_INT_LITERAL>[1];
+  <TK_ID>[a] = <TK_ID>[a] / <TK_INT_LITERAL>[1];
+
+  <TK_ID>[a] <TK_EQ> <TK_ID>[a];
+  <TK_ID>[a] <TK_LEQ> <TK_ID>[a];
+  <TK_ID>[a] <TK_GEQ> <TK_ID>[a];
+  <TK_ID>[a] < <TK_ID>[a];
+  <TK_ID>[a] > <TK_ID>[a];
+
+  <TK_ID>[a] = !<TK_ID>[a];
+
+  <TK_ID>[a] <TK_AND> <TK_ID>[a];
+  <TK_ID>[a] <TK_OR> <TK_ID>[a];
+}

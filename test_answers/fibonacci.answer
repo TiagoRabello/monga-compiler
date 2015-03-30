@@ -1,0 +1,25 @@
+<TK_INT_T> <TK_ID>[slow_fibonacci](<TK_INT_T> <TK_ID>[n])
+{
+  <TK_IF> (<TK_ID>[n] <TK_LEQ> <TK_INT_LITERAL>[2]) { <TK_RETURN> <TK_INT_LITERAL>[1]; }
+
+  <TK_RETURN> <TK_ID>[slow_fibonacci](<TK_ID>[n] - <TK_INT_LITERAL>[1]) + <TK_ID>[slow_fibonacci](<TK_ID>[n] - <TK_INT_LITERAL>[2]);
+}
+
+<TK_COMMENT>[/* Speeds up fibonacci by avoiding recalculations.
+ */]
+<TK_INT_T> <TK_ID>[fast_fibonacci](<TK_INT_T> <TK_ID>[n])
+{
+  <TK_INT_T> <TK_ID>[prev1] = <TK_INT_LITERAL>[1];
+  <TK_INT_T> <TK_ID>[prev2] = <TK_INT_LITERAL>[1];
+
+  <TK_WHILE> (<TK_ID>[n] > <TK_INT_LITERAL>[2])
+  {
+    <TK_INT_T> <TK_ID>[temp] = <TK_ID>[prev1];
+    <TK_ID>[prev1] = <TK_ID>[prev2];
+    <TK_ID>[prev2] = <TK_ID>[prev1] + <TK_ID>[prev2];
+    
+    <TK_ID>[n] = <TK_ID>[n] - <TK_INT_LITERAL>[1];
+  }
+
+  <TK_RETURN> <TK_ID>[prev2];
+}

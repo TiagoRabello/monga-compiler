@@ -1,0 +1,1 @@
+<TK_CHAR_T> <TK_ID>[str][] = <TK_STRING_LITERAL>["int main() { printf(\"Hello world\"); }"];

@@ -1,0 +1,6 @@
+<TK_COMMENT>[/*
+int main()
+{
+  printf("Hello world");
+}
+*/]

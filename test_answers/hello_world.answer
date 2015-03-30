@@ -1,0 +1,4 @@
+<TK_INT_T> <TK_ID>[main]()
+{
+  <TK_ID>[printf](<TK_STRING_LITERAL>["Hello world"]);
+}
