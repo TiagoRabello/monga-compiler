@@ -1,0 +1,4 @@
+<TK_INT_T> <TK_ID>[foo](<TK_INT_T>, <TK_FLOAT_T> <TK_ID>[a])
+{
+  <TK_RETURN> <TK_INT_LITERAL>[1];
+}

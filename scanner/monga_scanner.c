@@ -523,10 +523,11 @@ int process_scapes(char *str);
 #define PRINT_TOKEN_WITH_TEXT(token) printf("<" # token">[%s]", yytext)
 #else
 #define PRINT_TOKEN(token) (void)0
+#define PRINT_SINGLE_CHAR_TOKEN() (void)0
 #define PRINT_TOKEN_WITH_TEXT(token) (void)0
 #endif
 
-#line 530 "scanner/monga_scanner.c"
+#line 531 "scanner/monga_scanner.c"
 
 #define INITIAL 0
 
@@ -735,10 +736,10 @@ YY_DECL
 		}
 
 	{
-#line 20 "scanner/monga.lex"
+#line 21 "scanner/monga.lex"
 
 
-#line 742 "scanner/monga_scanner.c"
+#line 743 "scanner/monga_scanner.c"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -797,7 +798,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 22 "scanner/monga.lex"
+#line 23 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_CHAR_T);
   return TK_CHAR_T;
@@ -805,7 +806,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 27 "scanner/monga.lex"
+#line 28 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_FLOAT_T);
   return TK_FLOAT_T;
@@ -813,7 +814,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 32 "scanner/monga.lex"
+#line 33 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_INT_T);
   return TK_INT_T;
@@ -821,7 +822,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 37 "scanner/monga.lex"
+#line 38 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_VOID_T);
   return TK_VOID_T;
@@ -829,7 +830,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 42 "scanner/monga.lex"
+#line 43 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_IF);
   return TK_IF;
@@ -837,7 +838,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 47 "scanner/monga.lex"
+#line 48 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_ELSE);
   return TK_ELSE;
@@ -845,7 +846,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 52 "scanner/monga.lex"
+#line 53 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_WHILE);
   return TK_WHILE;
@@ -853,7 +854,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 57 "scanner/monga.lex"
+#line 58 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_NEW);
   return TK_NEW;
@@ -861,7 +862,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 62 "scanner/monga.lex"
+#line 63 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_RETURN);
   return TK_RETURN;
@@ -869,7 +870,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 67 "scanner/monga.lex"
+#line 68 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_EQ);
   return TK_EQ;
@@ -877,7 +878,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 72 "scanner/monga.lex"
+#line 73 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_AND);
   return TK_AND;
@@ -885,7 +886,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 77 "scanner/monga.lex"
+#line 78 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_OR);
   return TK_OR;
@@ -893,7 +894,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 82 "scanner/monga.lex"
+#line 83 "scanner/monga.lex"
 {
   PRINT_SINGLE_CHAR_TOKEN();
   return '<';
@@ -901,7 +902,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 87 "scanner/monga.lex"
+#line 88 "scanner/monga.lex"
 {
   PRINT_SINGLE_CHAR_TOKEN();
   return '>';
@@ -909,7 +910,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 92 "scanner/monga.lex"
+#line 93 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_LEQ);
   return TK_LEQ;
@@ -917,7 +918,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 97 "scanner/monga.lex"
+#line 98 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_GEQ);
   return TK_GEQ;
@@ -925,7 +926,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 102 "scanner/monga.lex"
+#line 103 "scanner/monga.lex"
 {
   PRINT_SINGLE_CHAR_TOKEN();
   return *yytext; 
@@ -933,84 +934,84 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 107 "scanner/monga.lex"
+#line 108 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_ID);
-  yyval.string_val = duplicate(yytext);
+  yylval.string_val = duplicate(yytext);
   return TK_ID;
 }
 	YY_BREAK
 case 19:
 /* rule 19 can match eol */
 YY_RULE_SETUP
-#line 113 "scanner/monga.lex"
+#line 114 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_COMMENT);
-  yyval.string_val = duplicate(yytext);
-  return TK_COMMENT;
+  /*yylval.string_val = duplicate(yytext);
+  return TK_COMMENT;*/
 }
 	YY_BREAK
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 119 "scanner/monga.lex"
+#line 120 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_STRING_LITERAL);
-  yyval.string_val = duplicate(yytext);
-  process_scapes(yyval.string_val);
+  yylval.string_val = duplicate(yytext);
+  process_scapes(yylval.string_val);
   return TK_STRING_LITERAL;
 }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 126 "scanner/monga.lex"
+#line 127 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_INT_LITERAL);
-  yyval.int_val = atoi(yytext);
+  yylval.int_val = atoi(yytext);
   return TK_INT_LITERAL;
 }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 132 "scanner/monga.lex"
+#line 133 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_INT_LITERAL);
-  yyval.int_val = atoi(yytext);
+  yylval.int_val = atoi(yytext);
   return TK_INT_LITERAL;
 }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 138 "scanner/monga.lex"
+#line 139 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_FLOAT_LITERAL);
-  yyval.float_val = atof(yytext);
+  yylval.float_val = atof(yytext);
   return TK_FLOAT_LITERAL;
 }
 	YY_BREAK
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 144 "scanner/monga.lex"
+#line 145 "scanner/monga.lex"
 {
   printf("%c", *yytext);
 }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 148 "scanner/monga.lex"
+#line 149 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(?);
-  yyval.char_val = *yytext;
+  yylval.char_val = *yytext;
   return TK_UNKNOWN;
 }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 154 "scanner/monga.lex"
+#line 155 "scanner/monga.lex"
 ECHO;
 	YY_BREAK
-#line 1014 "scanner/monga_scanner.c"
+#line 1015 "scanner/monga_scanner.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2005,7 +2006,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 154 "scanner/monga.lex"
+#line 155 "scanner/monga.lex"
 
 
 

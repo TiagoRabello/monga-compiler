@@ -12,6 +12,7 @@ int process_scapes(char *str);
 #define PRINT_TOKEN_WITH_TEXT(token) printf("<" # token">[%s]", yytext)
 #else
 #define PRINT_TOKEN(token) (void)0
+#define PRINT_SINGLE_CHAR_TOKEN() (void)0
 #define PRINT_TOKEN_WITH_TEXT(token) (void)0
 #endif
 
@@ -106,38 +107,38 @@ int process_scapes(char *str);
 
 [A-Za-z_][A-Za-z0-9_]* {
   PRINT_TOKEN_WITH_TEXT(TK_ID);
-  yyval.string_val = duplicate(yytext);
+  yylval.string_val = duplicate(yytext);
   return TK_ID;
 }
 
 "/*"(.|\n)*"*/" {
   PRINT_TOKEN_WITH_TEXT(TK_COMMENT);
-  yyval.string_val = duplicate(yytext);
-  return TK_COMMENT;
+  /*yylval.string_val = duplicate(yytext);
+  return TK_COMMENT;*/
 }
 
 \"(\\n|\\t|\\\"|[^\\\"])*\" {
   PRINT_TOKEN_WITH_TEXT(TK_STRING_LITERAL);
-  yyval.string_val = duplicate(yytext);
-  process_scapes(yyval.string_val);
+  yylval.string_val = duplicate(yytext);
+  process_scapes(yylval.string_val);
   return TK_STRING_LITERAL;
 }
 
 [0-9]+ {
   PRINT_TOKEN_WITH_TEXT(TK_INT_LITERAL);
-  yyval.int_val = atoi(yytext);
+  yylval.int_val = atoi(yytext);
   return TK_INT_LITERAL;
 }
 
 0[xX][A-Fa-f0-9]+ {
   PRINT_TOKEN_WITH_TEXT(TK_INT_LITERAL);
-  yyval.int_val = atoi(yytext);
+  yylval.int_val = atoi(yytext);
   return TK_INT_LITERAL;
 }
 
 (\.[0-9]+|[0-9]+\.|[0-9]+\.[0-9]+)[Ff]? {
   PRINT_TOKEN_WITH_TEXT(TK_FLOAT_LITERAL);
-  yyval.float_val = atof(yytext);
+  yylval.float_val = atof(yytext);
   return TK_FLOAT_LITERAL;
 }
 
@@ -147,7 +148,7 @@ int process_scapes(char *str);
 
 .  {
   PRINT_TOKEN_WITH_TEXT(?);
-  yyval.char_val = *yytext;
+  yylval.char_val = *yytext;
   return TK_UNKNOWN;
 }
 

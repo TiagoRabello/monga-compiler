@@ -1,1 +1,6 @@
-char str[] = "int main() { printf(\"Hello world\"); }";
+char[] str;
+
+int main()
+{
+  str = "int main() { printf(\"Hello world\"); }";
+}

@@ -1,0 +1,2 @@
+<TK_INT_T> <TK_ID>[i];
+<TK_ID>[i] = <TK_INT_LITERAL>[0];
