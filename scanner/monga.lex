@@ -6,7 +6,7 @@
 char * duplicate(const char *str);
 int process_scapes(char *str);
 
-#ifndef NDEBUG
+#ifdef SCANNER_DEBUG
 #define PRINT_TOKEN(token) printf("<" # token">")
 #define PRINT_SINGLE_CHAR_TOKEN() printf("%c", *yytext)
 #define PRINT_TOKEN_WITH_TEXT(token) printf("<" # token">[%s]", yytext)
@@ -17,6 +17,8 @@ int process_scapes(char *str);
 #endif
 
 %}
+
+%option yylineno
 
 %%
 
@@ -143,7 +145,7 @@ int process_scapes(char *str);
 }
 
 " "|\n|\r|\t {
-  printf("%c", *yytext);
+  PRINT_SINGLE_CHAR_TOKEN();
 }
 
 .  {

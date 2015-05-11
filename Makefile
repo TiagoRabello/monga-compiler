@@ -83,7 +83,7 @@ clean:
 	          $(PARSER_DIR)/monga_parser.c \
 	          $(BIN_DIR)/*
 
-scanner_test: $(BIN_DIR)/monga_scanner.o $(BIN_DIR)/monga_parser.o $(BIN_DIR)/scanner_test_main.o
+scanner_test: $(BIN_DIR)/monga_scanner_debug.o $(BIN_DIR)/monga_parser.o $(BIN_DIR)/scanner_test_main.o
 	$(CC) -o $(BIN_DIR)/$@ $^
 
 parser_test: $(BIN_DIR)/monga_scanner.o $(BIN_DIR)/monga_parser.o $(BIN_DIR)/parser_test_main.o
@@ -100,6 +100,9 @@ $(BIN_DIR)/monga_parser.o: $(PARSER_DIR)/monga_parser.c
 
 $(BIN_DIR)/monga_scanner.o: $(SCANNER_DIR)/monga_scanner.c $(SCANNER_DIR)/monga_tokens.h
 	$(CC) -c -o $@ $<
+
+$(BIN_DIR)/monga_scanner_debug.o: $(SCANNER_DIR)/monga_scanner.c $(SCANNER_DIR)/monga_tokens.h
+	$(CC) -DSCANNER_DEBUG -c -o $@ $<
 
 $(BIN_DIR)/scanner_test_main.o: $(SCANNER_DIR)/test.c
 	$(CC) -c -o $@ $<
