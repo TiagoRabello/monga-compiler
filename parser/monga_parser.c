@@ -1596,5 +1596,5 @@ yyreturn:
 
 
 void yyerror (char const *s) {
-  fprintf( stderr, "%s\n", s );
+  fprintf( stderr, "%s (line:%d)\n", s, yylineno );
 }

@@ -104,5 +104,5 @@ exp_list_tail : /* empty */ | ',' exp exp_list_tail
 %%
 
 void yyerror (char const *s) {
-  fprintf( stderr, "%s\n", s );
+  fprintf( stderr, "%s (line:%d)\n", s, yylineno );
 }
