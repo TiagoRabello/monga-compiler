@@ -8,12 +8,12 @@
 ###############################################################################
 # Working directories
 ###############################################################################
-AST_DIR=ast
+AST_DIR=src/ast
 BIN_DIR=bin
-SCANNER_DIR=scanner
-PARSER_DIR=parser
-TEST_INPUT_DIR=test_inputs
-TEST_ANSWERS_DIR=test_answers
+SCANNER_DIR=src/scanner
+PARSER_DIR=src/parser
+TEST_INPUT_DIR=test/inputs
+TEST_ANSWERS_DIR=test/answers
 
 ###############################################################################
 # Costumizable programs
