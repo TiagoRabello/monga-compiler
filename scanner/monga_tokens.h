@@ -74,14 +74,22 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 10 "parser/monga.y" /* yacc.c:1909  */
+#line 17 "parser/monga.y" /* yacc.c:1909  */
 
-  double float_val;
-  int    int_val;
-  char  *string_val;
-  char   char_val;
+  double              float_val;
+  int                 int_val;
+  char               *string_val;
+  char                char_val;
+  string_list_node   *string_list;
+  ast_decl_node      *decl_node;
+  ast_statement_node *statement_node;
+  ast_exp_node       *exp_node;
+  ast_var_node        var_node;
+  ast_func_call_node  func_call_node;
+  ast_type            type;
+  exp_list_node      *exp_list;
 
-#line 85 "scanner/monga_tokens.h" /* yacc.c:1909  */
+#line 93 "scanner/monga_tokens.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

@@ -8,6 +8,7 @@
 ###############################################################################
 # Working directories
 ###############################################################################
+AST_DIR=ast
 BIN_DIR=bin
 SCANNER_DIR=scanner
 PARSER_DIR=parser
@@ -50,7 +51,7 @@ test_scanner: scanner_test
 	@echo "Starting scanner tests:"
 	@$(foreach name, $(TEST_NAMES), \
 		echo -n "- Testing input $(name).monga..."; \
-		$(BIN_DIR)/$< < $(TEST_INPUT_DIR)/$(name).monga > out && $(DIFF) out $(TEST_ANSWERS_DIR)/$(name).answer; \
+		$(BIN_DIR)/$< < $(TEST_INPUT_DIR)/$(name).monga > out && $(DIFF) out $(TEST_ANSWERS_DIR)/$(name).scanner.answer; \
 		$(PRINT_RESULT_MSG);)
 	@echo "Done!"
 	@rm out
@@ -86,17 +87,17 @@ clean:
 scanner_test: $(BIN_DIR)/monga_scanner_debug.o $(BIN_DIR)/monga_parser.o $(BIN_DIR)/scanner_test_main.o
 	$(CC) -o $(BIN_DIR)/$@ $^
 
-parser_test: $(BIN_DIR)/monga_scanner.o $(BIN_DIR)/monga_parser.o $(BIN_DIR)/parser_test_main.o
+parser_test: $(BIN_DIR)/monga_scanner.o $(BIN_DIR)/monga_parser.o $(BIN_DIR)/ast_printer.o $(BIN_DIR)/parser_test_main.o
 	$(CC) -o $(BIN_DIR)/$@ $^
 
-$(PARSER_DIR)/monga_parser.c $(SCANNER_DIR)/monga_tokens.h: $(PARSER_DIR)/monga.y
-	$(YACC) -o $(PARSER_DIR)/monga_parser.c --defines=$(SCANNER_DIR)/monga_tokens.h $<
+# AST related files.
+$(BIN_DIR)/ast_printer.o: $(AST_DIR)/ast_printer.c $(AST_DIR)/ast_printer.h $(AST_DIR)/ast.h
+	$(CC) -c -o $@ $<
+
+# Scanner related files.
 
 $(SCANNER_DIR)/monga_scanner.c: $(SCANNER_DIR)/monga.lex
 	$(LEX) -o $@ $<
-
-$(BIN_DIR)/monga_parser.o: $(PARSER_DIR)/monga_parser.c
-	$(CC) -c -o $@ $<
 
 $(BIN_DIR)/monga_scanner.o: $(SCANNER_DIR)/monga_scanner.c $(SCANNER_DIR)/monga_tokens.h
 	$(CC) -c -o $@ $<
@@ -107,5 +108,13 @@ $(BIN_DIR)/monga_scanner_debug.o: $(SCANNER_DIR)/monga_scanner.c $(SCANNER_DIR)/
 $(BIN_DIR)/scanner_test_main.o: $(SCANNER_DIR)/test.c
 	$(CC) -c -o $@ $<
 
-$(BIN_DIR)/parser_test_main.o: $(PARSER_DIR)/test.c
+# Parser related files.
+
+$(PARSER_DIR)/monga_parser.c $(SCANNER_DIR)/monga_tokens.h: $(PARSER_DIR)/monga.y
+	$(YACC) -o $(PARSER_DIR)/monga_parser.c --defines=$(SCANNER_DIR)/monga_tokens.h $<
+
+$(BIN_DIR)/monga_parser.o: $(PARSER_DIR)/monga_parser.c
+	$(CC) -c -o $@ $<
+
+$(BIN_DIR)/parser_test_main.o: $(PARSER_DIR)/test.c $(PARSER_DIR)/monga_parser.h
 	$(CC) -c -o $@ $<

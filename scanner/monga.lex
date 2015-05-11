@@ -1,10 +1,13 @@
 %{
 
+#include "../ast/ast.h"
+#include "../common/util.h"
+
 #include "monga_tokens.h"
 #include <stdio.h>
 
-char * duplicate(const char *str);
-int process_scapes(char *str);
+static char * duplicate(const char *str);
+static int process_scapes(char *str);
 
 #ifdef SCANNER_DEBUG
 #define PRINT_TOKEN(token) printf("<" # token">")
@@ -156,7 +159,7 @@ int process_scapes(char *str);
 
 %%
 
-char * duplicate(const char *str)
+static char * duplicate(const char *str)
 {
   size_t alloc_size = sizeof(char) * (strlen(str) + 1);
   char * new_str = (char *)yyalloc(alloc_size);
@@ -164,7 +167,7 @@ char * duplicate(const char *str)
   return new_str;
 }
 
-int process_scapes(char *str)
+static int process_scapes(char *str)
 {
   enum
   {

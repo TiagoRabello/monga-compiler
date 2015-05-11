@@ -536,11 +536,14 @@ char *yytext;
 #line 1 "scanner/monga.lex"
 #line 2 "scanner/monga.lex"
 
+#include "../ast/ast.h"
+#include "../common/util.h"
+
 #include "monga_tokens.h"
 #include <stdio.h>
 
-char * duplicate(const char *str);
-int process_scapes(char *str);
+static char * duplicate(const char *str);
+static int process_scapes(char *str);
 
 #ifdef SCANNER_DEBUG
 #define PRINT_TOKEN(token) printf("<" # token">")
@@ -552,7 +555,7 @@ int process_scapes(char *str);
 #define PRINT_TOKEN_WITH_TEXT(token) (void)0
 #endif
 
-#line 556 "scanner/monga_scanner.c"
+#line 559 "scanner/monga_scanner.c"
 
 #define INITIAL 0
 
@@ -761,10 +764,10 @@ YY_DECL
 		}
 
 	{
-#line 23 "scanner/monga.lex"
+#line 26 "scanner/monga.lex"
 
 
-#line 768 "scanner/monga_scanner.c"
+#line 771 "scanner/monga_scanner.c"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -833,7 +836,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 25 "scanner/monga.lex"
+#line 28 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_CHAR_T);
   return TK_CHAR_T;
@@ -841,7 +844,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 30 "scanner/monga.lex"
+#line 33 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_FLOAT_T);
   return TK_FLOAT_T;
@@ -849,7 +852,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 35 "scanner/monga.lex"
+#line 38 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_INT_T);
   return TK_INT_T;
@@ -857,7 +860,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 40 "scanner/monga.lex"
+#line 43 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_VOID_T);
   return TK_VOID_T;
@@ -865,7 +868,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 45 "scanner/monga.lex"
+#line 48 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_IF);
   return TK_IF;
@@ -873,7 +876,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 50 "scanner/monga.lex"
+#line 53 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_ELSE);
   return TK_ELSE;
@@ -881,7 +884,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 55 "scanner/monga.lex"
+#line 58 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_WHILE);
   return TK_WHILE;
@@ -889,7 +892,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 60 "scanner/monga.lex"
+#line 63 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_NEW);
   return TK_NEW;
@@ -897,7 +900,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 65 "scanner/monga.lex"
+#line 68 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_RETURN);
   return TK_RETURN;
@@ -905,7 +908,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 70 "scanner/monga.lex"
+#line 73 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_EQ);
   return TK_EQ;
@@ -913,7 +916,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 75 "scanner/monga.lex"
+#line 78 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_AND);
   return TK_AND;
@@ -921,7 +924,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 80 "scanner/monga.lex"
+#line 83 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_OR);
   return TK_OR;
@@ -929,7 +932,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 85 "scanner/monga.lex"
+#line 88 "scanner/monga.lex"
 {
   PRINT_SINGLE_CHAR_TOKEN();
   return '<';
@@ -937,7 +940,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 90 "scanner/monga.lex"
+#line 93 "scanner/monga.lex"
 {
   PRINT_SINGLE_CHAR_TOKEN();
   return '>';
@@ -945,7 +948,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 95 "scanner/monga.lex"
+#line 98 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_LEQ);
   return TK_LEQ;
@@ -953,7 +956,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 100 "scanner/monga.lex"
+#line 103 "scanner/monga.lex"
 {
   PRINT_TOKEN(TK_GEQ);
   return TK_GEQ;
@@ -961,7 +964,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 105 "scanner/monga.lex"
+#line 108 "scanner/monga.lex"
 {
   PRINT_SINGLE_CHAR_TOKEN();
   return *yytext; 
@@ -969,7 +972,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 110 "scanner/monga.lex"
+#line 113 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_ID);
   yylval.string_val = duplicate(yytext);
@@ -979,7 +982,7 @@ YY_RULE_SETUP
 case 19:
 /* rule 19 can match eol */
 YY_RULE_SETUP
-#line 116 "scanner/monga.lex"
+#line 119 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_COMMENT);
   /*yylval.string_val = duplicate(yytext);
@@ -989,7 +992,7 @@ YY_RULE_SETUP
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 122 "scanner/monga.lex"
+#line 125 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_STRING_LITERAL);
   yylval.string_val = duplicate(yytext);
@@ -999,7 +1002,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 129 "scanner/monga.lex"
+#line 132 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_INT_LITERAL);
   yylval.int_val = atoi(yytext);
@@ -1008,7 +1011,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 135 "scanner/monga.lex"
+#line 138 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_INT_LITERAL);
   yylval.int_val = atoi(yytext);
@@ -1017,7 +1020,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 141 "scanner/monga.lex"
+#line 144 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(TK_FLOAT_LITERAL);
   yylval.float_val = atof(yytext);
@@ -1027,14 +1030,14 @@ YY_RULE_SETUP
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 147 "scanner/monga.lex"
+#line 150 "scanner/monga.lex"
 {
   PRINT_SINGLE_CHAR_TOKEN();
 }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 151 "scanner/monga.lex"
+#line 154 "scanner/monga.lex"
 {
   PRINT_TOKEN_WITH_TEXT(?);
   yylval.char_val = *yytext;
@@ -1043,10 +1046,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 157 "scanner/monga.lex"
+#line 160 "scanner/monga.lex"
 ECHO;
 	YY_BREAK
-#line 1050 "scanner/monga_scanner.c"
+#line 1053 "scanner/monga_scanner.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2053,11 +2056,11 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 157 "scanner/monga.lex"
+#line 160 "scanner/monga.lex"
 
 
 
-char * duplicate(const char *str)
+static char * duplicate(const char *str)
 {
   size_t alloc_size = sizeof(char) * (strlen(str) + 1);
   char * new_str = (char *)yyalloc(alloc_size);
@@ -2065,7 +2068,7 @@ char * duplicate(const char *str)
   return new_str;
 }
 
-int process_scapes(char *str)
+static int process_scapes(char *str)
 {
   enum
   {

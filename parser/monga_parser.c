@@ -64,14 +64,21 @@
 /* Copy the first part of user declarations.  */
 #line 1 "parser/monga.y" /* yacc.c:339  */
 
+#include "../ast/ast.h"
+#include "../common/util.h"
+
+#include "monga_parser.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-int yylex (void);
-void yyerror (char const *);
-extern int yylineno;
 
-#line 75 "parser/monga_parser.c" /* yacc.c:339  */
+void yyerror (char const *);
+
+ast_program_node *ast;
+
+
+#line 82 "parser/monga_parser.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -135,14 +142,22 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 10 "parser/monga.y" /* yacc.c:355  */
+#line 17 "parser/monga.y" /* yacc.c:355  */
 
-  double float_val;
-  int    int_val;
-  char  *string_val;
-  char   char_val;
+  double              float_val;
+  int                 int_val;
+  char               *string_val;
+  char                char_val;
+  string_list_node   *string_list;
+  ast_decl_node      *decl_node;
+  ast_statement_node *statement_node;
+  ast_exp_node       *exp_node;
+  ast_var_node        var_node;
+  ast_func_call_node  func_call_node;
+  ast_type            type;
+  exp_list_node      *exp_list;
 
-#line 146 "parser/monga_parser.c" /* yacc.c:355  */
+#line 161 "parser/monga_parser.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -159,7 +174,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 163 "parser/monga_parser.c" /* yacc.c:358  */
+#line 178 "parser/monga_parser.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -456,15 +471,15 @@ static const yytype_uint8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    51,    51,    52,    52,    53,    53,    55,    57,    58,
-      58,    60,    60,    61,    61,    61,    61,    63,    64,    64,
-      65,    65,    67,    68,    69,    70,    71,    72,    73,    74,
-      75,    77,    77,    78,    78,    80,    80,    81,    81,    81,
-      82,    83,    84,    85,    86,    87,    88,    89,    90,    91,
-      92,    93,    94,    95,    96,    97,    98,   100,   101,   101,
-     102,   102
+       0,    75,    75,    78,    81,    87,    87,    92,   109,   115,
+     116,   118,   119,   121,   122,   123,   124,   126,   137,   138,
+     148,   149,   159,   168,   178,   188,   197,   206,   214,   222,
+     230,   235,   236,   241,   242,   248,   253,   259,   265,   271,
+     277,   283,   287,   293,   300,   307,   315,   323,   331,   339,
+     347,   355,   363,   371,   379,   386,   394,   403,   408,   409,
+     415,   416
 };
 #endif
 
@@ -1363,8 +1378,594 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
-#line 1368 "parser/monga_parser.c" /* yacc.c:1646  */
+        case 2:
+#line 75 "parser/monga.y" /* yacc.c:1646  */
+    { ast = (yyvsp[0].decl_node); }
+#line 1385 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 3:
+#line 78 "parser/monga.y" /* yacc.c:1646  */
+    {
+                      (yyval.decl_node) = NULL;
+                    }
+#line 1393 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 4:
+#line 82 "parser/monga.y" /* yacc.c:1646  */
+    {
+                      (yyvsp[-1].decl_node)->next = (yyvsp[0].decl_node);
+                      (yyval.decl_node) = (yyvsp[-1].decl_node);
+                    }
+#line 1402 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 6:
+#line 88 "parser/monga.y" /* yacc.c:1646  */
+    {
+  (yyval.decl_node) = (yyvsp[0].decl_node);
+}
+#line 1410 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 7:
+#line 93 "parser/monga.y" /* yacc.c:1646  */
+    {
+  (yyval.decl_node) = NULL;
+
+  string_list_node *list;
+  for (list = (yyvsp[-1].string_list); list; list = list->next)
+  {
+    ast_decl_node *temp = (ast_decl_node *)malloc(sizeof(ast_decl_node));
+
+    temp->next                = (yyval.decl_node);
+    temp->tag                 = decl_var_tag;
+    temp->value.decl_var.type = (yyvsp[-2].type);
+    temp->value.decl_var.name = list->string;
+    (yyval.decl_node)                        = temp;
+  }
+}
+#line 1430 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 8:
+#line 110 "parser/monga.y" /* yacc.c:1646  */
+    {
+  (yyval.string_list)         = (string_list_node *)malloc(sizeof(string_list_node));
+  (yyval.string_list)->string = (yyvsp[-1].string_val);
+  (yyval.string_list)->next   = (yyvsp[0].string_list);
+}
+#line 1440 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 9:
+#line 115 "parser/monga.y" /* yacc.c:1646  */
+    { (yyval.string_list) = NULL; }
+#line 1446 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 10:
+#line 116 "parser/monga.y" /* yacc.c:1646  */
+    { (yyval.string_list) = (yyvsp[0].string_list);   }
+#line 1452 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 11:
+#line 118 "parser/monga.y" /* yacc.c:1646  */
+    { (yyval.type) = (yyvsp[0].type); }
+#line 1458 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 12:
+#line 119 "parser/monga.y" /* yacc.c:1646  */
+    { (yyval.type) = (yyvsp[-2].type); ++((yyval.type).dimensions); }
+#line 1464 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 13:
+#line 121 "parser/monga.y" /* yacc.c:1646  */
+    {  (yyval.type).type = ast_int_type;   (yyval.type).dimensions = 0; }
+#line 1470 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 14:
+#line 122 "parser/monga.y" /* yacc.c:1646  */
+    {  (yyval.type).type = ast_char_type;  (yyval.type).dimensions = 0; }
+#line 1476 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 15:
+#line 123 "parser/monga.y" /* yacc.c:1646  */
+    {  (yyval.type).type = ast_float_type; (yyval.type).dimensions = 0; }
+#line 1482 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 16:
+#line 124 "parser/monga.y" /* yacc.c:1646  */
+    {  (yyval.type).type = ast_void_type;  (yyval.type).dimensions = 0; }
+#line 1488 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 17:
+#line 127 "parser/monga.y" /* yacc.c:1646  */
+    {
+  (yyval.decl_node) = (ast_decl_node *)malloc(sizeof(ast_decl_node));
+
+  (yyval.decl_node)->next                        = NULL;
+  (yyval.decl_node)->tag                         = decl_func_tag;
+  (yyval.decl_node)->value.decl_func.return_type = (yyvsp[-5].type);
+  (yyval.decl_node)->value.decl_func.name        = (yyvsp[-4].string_val);
+  (yyval.decl_node)->value.decl_func.params      = (yyvsp[-2].decl_node);
+  (yyval.decl_node)->value.decl_func.body        = (yyvsp[0].statement_node);
+}
+#line 1503 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 18:
+#line 137 "parser/monga.y" /* yacc.c:1646  */
+    { (yyval.decl_node) = NULL; }
+#line 1509 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 19:
+#line 139 "parser/monga.y" /* yacc.c:1646  */
+    {
+          (yyval.decl_node) = (ast_decl_node *)malloc(sizeof(ast_decl_node));
+
+          (yyval.decl_node)->next                = (yyvsp[0].decl_node);
+          (yyval.decl_node)->tag                 = decl_var_tag;
+          (yyval.decl_node)->value.decl_var.type = (yyvsp[-2].type);
+          (yyval.decl_node)->value.decl_var.name = (yyvsp[-1].string_val);
+        }
+#line 1522 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 20:
+#line 148 "parser/monga.y" /* yacc.c:1646  */
+    { (yyval.decl_node) = NULL;}
+#line 1528 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 21:
+#line 150 "parser/monga.y" /* yacc.c:1646  */
+    {
+                (yyval.decl_node) = (ast_decl_node *)malloc(sizeof(ast_decl_node));
+
+                (yyval.decl_node)->next                = (yyvsp[0].decl_node);
+                (yyval.decl_node)->tag                 = decl_var_tag;
+                (yyval.decl_node)->value.decl_var.type = (yyvsp[-2].type);
+                (yyval.decl_node)->value.decl_var.name = (yyvsp[-1].string_val);
+              }
+#line 1541 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 22:
+#line 160 "parser/monga.y" /* yacc.c:1646  */
+    {
+  (yyval.statement_node) = (ast_statement_node *)malloc(sizeof(ast_statement_node));
+
+  (yyval.statement_node)->tag                         = ast_statement_block_tag;
+  (yyval.statement_node)->value.block_node.decl_vars  = (yyvsp[-2].decl_node);
+  (yyval.statement_node)->value.block_node.statements = (yyvsp[-1].statement_node);
+  (yyval.statement_node)->next                        = NULL;
+}
+#line 1554 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 23:
+#line 169 "parser/monga.y" /* yacc.c:1646  */
+    {
+              (yyval.statement_node) = (ast_statement_node *)malloc(sizeof(ast_statement_node));
+
+              (yyval.statement_node)->tag                          = ast_statement_if_else_tag;
+              (yyval.statement_node)->next                         = NULL;
+              (yyval.statement_node)->value.if_else_node.exp       = (yyvsp[-2].exp_node);
+              (yyval.statement_node)->value.if_else_node.if_body   = (yyvsp[0].statement_node);
+              (yyval.statement_node)->value.if_else_node.else_body = NULL;
+            }
+#line 1568 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 24:
+#line 179 "parser/monga.y" /* yacc.c:1646  */
+    {
+              (yyval.statement_node) = (ast_statement_node *)malloc(sizeof(ast_statement_node));
+
+              (yyval.statement_node)->tag                          = ast_statement_if_else_tag;
+              (yyval.statement_node)->next                         = NULL;
+              (yyval.statement_node)->value.if_else_node.exp       = (yyvsp[-4].exp_node);
+              (yyval.statement_node)->value.if_else_node.if_body   = (yyvsp[-2].statement_node);
+              (yyval.statement_node)->value.if_else_node.else_body = (yyvsp[0].statement_node);
+            }
+#line 1582 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 25:
+#line 189 "parser/monga.y" /* yacc.c:1646  */
+    {
+              (yyval.statement_node) = (ast_statement_node *)malloc(sizeof(ast_statement_node));
+              
+              (yyval.statement_node)->tag                        = ast_statement_while_tag;
+              (yyval.statement_node)->next                       = NULL;
+              (yyval.statement_node)->value.while_node.exp       = (yyvsp[-2].exp_node);
+              (yyval.statement_node)->value.while_node.statement = (yyvsp[0].statement_node);
+            }
+#line 1595 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 26:
+#line 198 "parser/monga.y" /* yacc.c:1646  */
+    {
+              (yyval.statement_node) = (ast_statement_node *)malloc(sizeof(ast_statement_node));
+              
+              (yyval.statement_node)->tag  = ast_statement_assign_tag;
+              (yyval.statement_node)->next = NULL;
+              (yyval.statement_node)->value.assign_node.var = (yyvsp[-3].var_node);
+              (yyval.statement_node)->value.assign_node.exp = (yyvsp[-1].exp_node);
+            }
+#line 1608 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 27:
+#line 207 "parser/monga.y" /* yacc.c:1646  */
+    {
+              (yyval.statement_node) = (ast_statement_node *)malloc(sizeof(ast_statement_node));
+              
+              (yyval.statement_node)->tag                   = ast_statement_return_tag;
+              (yyval.statement_node)->next                  = NULL;
+              (yyval.statement_node)->value.return_node.exp = NULL;
+            }
+#line 1620 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 28:
+#line 215 "parser/monga.y" /* yacc.c:1646  */
+    {
+              (yyval.statement_node) = (ast_statement_node *)malloc(sizeof(ast_statement_node));
+              
+              (yyval.statement_node)->tag                   = ast_statement_return_tag;
+              (yyval.statement_node)->next                  = NULL;
+              (yyval.statement_node)->value.return_node.exp = (yyvsp[-1].exp_node);
+            }
+#line 1632 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 29:
+#line 223 "parser/monga.y" /* yacc.c:1646  */
+    {
+              (yyval.statement_node) = (ast_statement_node *)malloc(sizeof(ast_statement_node));
+              
+              (yyval.statement_node)->tag                  = ast_statement_func_call_tag;
+              (yyval.statement_node)->next                 = NULL;
+              (yyval.statement_node)->value.func_call_node = (yyvsp[-1].func_call_node);
+            }
+#line 1644 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 30:
+#line 231 "parser/monga.y" /* yacc.c:1646  */
+    {
+              (yyval.statement_node) = (yyvsp[0].statement_node);
+            }
+#line 1652 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 31:
+#line 235 "parser/monga.y" /* yacc.c:1646  */
+    { (yyval.decl_node) = NULL; }
+#line 1658 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 32:
+#line 237 "parser/monga.y" /* yacc.c:1646  */
+    {
+                  (yyval.decl_node) = (yyvsp[-1].decl_node);
+                  (yyval.decl_node)->next = (yyvsp[0].decl_node);
+                }
+#line 1667 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 33:
+#line 241 "parser/monga.y" /* yacc.c:1646  */
+    { (yyval.statement_node) = NULL; }
+#line 1673 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 34:
+#line 243 "parser/monga.y" /* yacc.c:1646  */
+    {
+                  (yyval.statement_node) = (yyvsp[-1].statement_node);
+                  (yyval.statement_node)->next = (yyvsp[0].statement_node);
+                }
+#line 1682 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 35:
+#line 249 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.var_node).tag                        = non_indexed;
+        (yyval.var_node).value.non_indexed.var_name = (yyvsp[0].string_val);
+      }
+#line 1691 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 36:
+#line 254 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.var_node).tag                 = indexed;
+        (yyval.var_node).value.indexed.base  = (yyvsp[-3].exp_node);
+        (yyval.var_node).value.indexed.index = (yyvsp[-1].exp_node);
+      }
+#line 1701 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 37:
+#line 260 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = float_literal_tag;
+        (yyval.exp_node)->value.float_literal = (yyvsp[0].float_val);
+      }
+#line 1711 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 38:
+#line 266 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = int_literal_tag;
+        (yyval.exp_node)->value.int_literal = (yyvsp[0].int_val);
+      }
+#line 1721 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 39:
+#line 272 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = string_literal_tag;
+        (yyval.exp_node)->value.string_literal = (yyvsp[0].string_val);
+      }
+#line 1731 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 40:
+#line 278 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = var_tag;
+        (yyval.exp_node)->value.var = (yyvsp[0].var_node);
+      }
+#line 1741 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 41:
+#line 284 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (yyvsp[-1].exp_node);
+      }
+#line 1749 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 42:
+#line 288 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = func_call_tag;
+        (yyval.exp_node)->value.func_call = (yyvsp[0].func_call_node);
+      }
+#line 1759 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 43:
+#line 294 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag                    = operator_new_tag;
+        (yyval.exp_node)->value.operator_new.type = (yyvsp[-3].type);
+        (yyval.exp_node)->value.operator_new.exp  = (yyvsp[-1].exp_node);
+      }
+#line 1770 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 44:
+#line 301 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = unop_tag;
+        (yyval.exp_node)->value.unop_node.tag = minus_tag;
+        (yyval.exp_node)->value.unop_node.exp = (yyvsp[0].exp_node);
+      }
+#line 1781 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 45:
+#line 308 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = add_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1793 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 46:
+#line 316 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = subtract_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1805 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 47:
+#line 324 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = multiply_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1817 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 48:
+#line 332 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = divide_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1829 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 49:
+#line 340 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = equal_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1841 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 50:
+#line 348 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = less_equal_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1853 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 51:
+#line 356 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = greater_equal_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1865 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 52:
+#line 364 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = less_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1877 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 53:
+#line 372 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = greater_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1889 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 54:
+#line 380 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = unop_tag;
+        (yyval.exp_node)->value.unop_node.tag = logical_not_tag;
+        (yyval.exp_node)->value.unop_node.exp = (yyvsp[0].exp_node);
+      }
+#line 1900 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 55:
+#line 387 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = logical_and_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1912 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 56:
+#line 395 "parser/monga.y" /* yacc.c:1646  */
+    {
+        (yyval.exp_node) = (ast_exp_node *)malloc(sizeof(ast_exp_node));
+        (yyval.exp_node)->tag = binop_tag;
+        (yyval.exp_node)->value.binop_node.tag  = logical_or_tag;
+        (yyval.exp_node)->value.binop_node.exp1 = (yyvsp[-2].exp_node);
+        (yyval.exp_node)->value.binop_node.exp2 = (yyvsp[0].exp_node);
+      }
+#line 1924 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 57:
+#line 404 "parser/monga.y" /* yacc.c:1646  */
+    {
+  (yyval.func_call_node).func_name = (yyvsp[-3].string_val);
+  (yyval.func_call_node).params    = (yyvsp[-1].exp_list);
+}
+#line 1933 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 58:
+#line 408 "parser/monga.y" /* yacc.c:1646  */
+    { (yyval.exp_list) = NULL; }
+#line 1939 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 59:
+#line 410 "parser/monga.y" /* yacc.c:1646  */
+    {
+            (yyval.exp_list) = (exp_list_node *)malloc(sizeof(exp_list_node));
+            (yyval.exp_list)->exp  = (yyvsp[-1].exp_node);
+            (yyval.exp_list)->next = (yyvsp[0].exp_list);
+          }
+#line 1949 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 60:
+#line 415 "parser/monga.y" /* yacc.c:1646  */
+    { (yyval.exp_list) = NULL; }
+#line 1955 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+  case 61:
+#line 417 "parser/monga.y" /* yacc.c:1646  */
+    {
+                  (yyval.exp_list) = (exp_list_node *)malloc(sizeof(exp_list_node));
+                  (yyval.exp_list)->exp  = (yyvsp[-1].exp_node);
+                  (yyval.exp_list)->next = (yyvsp[0].exp_list);
+                }
+#line 1965 "parser/monga_parser.c" /* yacc.c:1646  */
+    break;
+
+
+#line 1969 "parser/monga_parser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1592,7 +2193,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 104 "parser/monga.y" /* yacc.c:1906  */
+#line 423 "parser/monga.y" /* yacc.c:1906  */
 
 
 void yyerror (char const *s) {
