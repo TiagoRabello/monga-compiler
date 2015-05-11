@@ -61,7 +61,7 @@ test_parser: parser_test
 	@echo "Starting positive parser tests:"
 	@$(foreach name, $(POSITIVE_TEST_NAMES), \
 		echo -n "- Testing input $(name).monga..."; \
-		$(BIN_DIR)/$< < $(TEST_INPUT_DIR)/$(name).monga > /dev/null ; \
+		$(BIN_DIR)/$< < $(TEST_INPUT_DIR)/$(name).monga > out && $(DIFF) out $(TEST_ANSWERS_DIR)/$(name).parser.answer; \
 		/usr/bin/test "$$?" -eq 0; \
 		$(PRINT_RESULT_MSG);)
 	@echo "Done!"
@@ -72,6 +72,7 @@ test_parser: parser_test
 		/usr/bin/test "$$?" -eq 1; \
 		$(PRINT_RESULT_MSG);)
 	@echo "Done!"
+	@rm out
 
 # Build lexical analyzer's object files.
 monga_scanner: $(BIN_DIR)/monga_scanner.o $(BIN_DIR)/monga_parser.o

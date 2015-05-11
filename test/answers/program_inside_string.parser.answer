@@ -1,0 +1,5 @@
+char[] str;
+int main()
+{
+  str = "int main() { printf(\"Hello world\"); }";
+}
