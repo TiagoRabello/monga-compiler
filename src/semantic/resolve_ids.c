@@ -178,7 +178,8 @@ void resolve_ids_func_call(ast_func_call_node *node, symbol_table *table)
   symbol_table_cell *cell = symbol_table_find(table, node->value.func_name);
   if (cell != table->end)
   {
-    node->value.decl = cell->decl;
+    node->link_status = linked;
+    node->value.decl  = cell->decl;
   }
   else
   {
@@ -263,7 +264,8 @@ void resolve_ids_var(ast_var_node *node, symbol_table *table)
         symbol_table_cell *cell = symbol_table_find(table, node->value.non_indexed.value.var_name);
         if (cell != table->end)
         {
-          node->value.non_indexed.value.decl = cell->decl;
+          node->value.non_indexed.link_status = linked;
+          node->value.non_indexed.value.decl  = cell->decl;
         }
         else
         {

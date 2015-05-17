@@ -249,6 +249,7 @@ var : TK_ID
       {
         $$.tag                              = non_indexed;
         $$.value.non_indexed.value.var_name = $1;
+        $$.value.non_indexed.link_status    = not_linked;
       }
     | exp '[' exp ']'
       {
@@ -402,6 +403,7 @@ exp : TK_FLOAT_LITERAL
 
 func_call : TK_ID '(' exp_list ')'
 {
+  $$.link_status     = not_linked;
   $$.value.func_name = $1;
   $$.params          = $3;
 }
