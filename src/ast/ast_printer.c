@@ -157,8 +157,8 @@ void print_ast_statement_block_node(FILE *out, const ast_statement_block_node *n
   ast_decl_node *decl_node;
   for (decl_node = node->decl_vars; decl_node; decl_node = decl_node->next)
   {
-    assert(node->decl_vars->tag == decl_var_tag);
-    print_ast_decl_var_node(out, &(node->decl_vars->value.decl_var), indent_level + INDENT_INCREMENT); 
+    assert(decl_node->tag == decl_var_tag);
+    print_ast_decl_var_node(out, &(decl_node->value.decl_var), indent_level + INDENT_INCREMENT); 
   }
 
   ast_statement_node *statement_node;
