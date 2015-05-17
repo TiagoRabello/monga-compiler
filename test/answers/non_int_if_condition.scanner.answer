@@ -1,0 +1,11 @@
+<TK_INT_T> <TK_ID>[foo]()
+{
+  <TK_IF> (<TK_FLOAT_LITERAL>[1.0])
+  {
+    <TK_RETURN> <TK_INT_LITERAL>[1];
+  }
+  <TK_ELSE>
+  {
+    <TK_RETURN> <TK_INT_LITERAL>[0];
+  }
+}

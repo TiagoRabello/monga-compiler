@@ -1,0 +1,5 @@
+<TK_VOID_T> <TK_ID>[foo]()
+{
+  <TK_INT_T> <TK_ID>[a];
+  <TK_ID>[a] = <TK_FLOAT_LITERAL>[1.0];
+}

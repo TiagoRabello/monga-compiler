@@ -1,0 +1,11 @@
+int foo()
+{
+  if (1.000000)
+  {
+    return 1;
+  }
+else
+  {
+    return 0;
+  }
+}

@@ -1,0 +1,4 @@
+<TK_VOID_T> <TK_ID>[foo]()
+{
+  <TK_WHILE> (<TK_STRING_LITERAL>["bla"]) {}
+}

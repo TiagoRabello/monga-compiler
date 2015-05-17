@@ -38,7 +38,12 @@ SEMANTIC_POSITIVE_TEST_NAMES = fibonacci \
 SEMANTIC_NEGATIVE_TEST_NAMES = hello_world \
                                use_undefined_var \
                                use_var_outside_scope \
-                               call_func_before_decl
+                               call_func_before_decl \
+                               assign_type_mismatch \
+                               index_non_indexable \
+                               non_int_if_condition \
+                               non_int_while_condition \
+                               decl_void_var
 
 PARSER_POSITIVE_TEST_NAMES = ${SEMANTIC_POSITIVE_TEST_NAMES} ${SEMANTIC_NEGATIVE_TEST_NAMES}
 PARSER_NEGATIVE_TEST_NAMES = global_statement single_line_decl_def no_name_param decl_var_mid_block
@@ -129,9 +134,11 @@ parser_test: $(BIN_DIR)/monga_scanner.o \
 	$(CC) -o $(BIN_DIR)/$@ $^
 
 semantic_test: $(BIN_DIR)/monga_scanner.o \
-	             $(BIN_DIR)/monga_parser.o \
-	           	 $(BIN_DIR)/resolve_ids.o \
-	             $(BIN_DIR)/semantic_test_main.o
+               $(BIN_DIR)/monga_parser.o \
+               $(BIN_DIR)/ast_printer.o \
+               $(BIN_DIR)/resolve_ids.o \
+               $(BIN_DIR)/resolve_types.o \
+               $(BIN_DIR)/semantic_test_main.o
 	$(CC) -o $(BIN_DIR)/$@ $^
 
 # AST related files.
@@ -166,6 +173,12 @@ $(BIN_DIR)/parser_test_main.o: $(PARSER_DIR)/test.c $(PARSER_DIR)/monga_parser.h
 # Semantics related files.
 
 $(BIN_DIR)/resolve_ids.o: $(SEMANTIC_DIR)/resolve_ids.c $(SEMANTIC_DIR)/semantic.h $(AST_DIR)/ast.h
+	$(CC) -c -o $@ $<
+
+$(BIN_DIR)/resolve_types.o: $(SEMANTIC_DIR)/resolve_types.c \
+                            $(SEMANTIC_DIR)/semantic.h \
+                            $(AST_DIR)/ast.h \
+                            $(AST_DIR)/ast_printer.h
 	$(CC) -c -o $@ $<
 
 $(BIN_DIR)/semantic_test_main.o: $(SEMANTIC_DIR)/test.c \
