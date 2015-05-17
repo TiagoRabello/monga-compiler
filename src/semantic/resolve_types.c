@@ -66,8 +66,6 @@ int is_convertible_to_int(ast_type type)
 }
 
 // TODO: Verify return type.
-// TODO: Add type cast.
-// TODO: Modify print functions to work after linking.
 
 void resolve_types(ast_program_node *ast)
 {
