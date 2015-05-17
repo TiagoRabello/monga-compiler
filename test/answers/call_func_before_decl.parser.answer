@@ -1,0 +1,9 @@
+void foo()
+{
+  int a;
+  a = inc(5);
+}
+int inc(int n)
+{
+  return n + 1;
+}
