@@ -13,7 +13,10 @@ typedef struct _exp_list_node    exp_list_node;
 
 struct _ast_var_non_indexed_node
 {
-  const char *var_name;
+  union {
+    const char *var_name; 
+    ast_decl_node *decl;
+  } value;
 };
 
 struct _ast_var_indexed_node
@@ -45,7 +48,10 @@ struct _ast_var_node
 
 struct _ast_func_call_node
 {
-  const char    *func_name;
+  union {
+    const char    *func_name;
+    ast_decl_node *decl;
+  } value;
   exp_list_node *params;
 };
 

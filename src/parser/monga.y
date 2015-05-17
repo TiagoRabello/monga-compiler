@@ -247,8 +247,8 @@ statement_list : /* empty */ { $$ = NULL; }
 
 var : TK_ID
       {
-        $$.tag                        = non_indexed;
-        $$.value.non_indexed.var_name = $1;
+        $$.tag                              = non_indexed;
+        $$.value.non_indexed.value.var_name = $1;
       }
     | exp '[' exp ']'
       {
@@ -402,8 +402,8 @@ exp : TK_FLOAT_LITERAL
 
 func_call : TK_ID '(' exp_list ')'
 {
-  $$.func_name = $1;
-  $$.params    = $3;
+  $$.value.func_name = $1;
+  $$.params          = $3;
 }
 exp_list : /* empty */        { $$ = NULL; }
          | exp exp_list_tail

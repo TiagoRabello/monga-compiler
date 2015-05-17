@@ -1684,8 +1684,8 @@ yyreduce:
   case 35:
 #line 249 "src/parser/monga.y" /* yacc.c:1646  */
     {
-        (yyval.var_node).tag                        = non_indexed;
-        (yyval.var_node).value.non_indexed.var_name = (yyvsp[0].string_val);
+        (yyval.var_node).tag                              = non_indexed;
+        (yyval.var_node).value.non_indexed.value.var_name = (yyvsp[0].string_val);
       }
 #line 1691 "src/parser/monga_parser.c" /* yacc.c:1646  */
     break;
@@ -1926,8 +1926,8 @@ yyreduce:
   case 57:
 #line 404 "src/parser/monga.y" /* yacc.c:1646  */
     {
-  (yyval.func_call_node).func_name = (yyvsp[-3].string_val);
-  (yyval.func_call_node).params    = (yyvsp[-1].exp_list);
+  (yyval.func_call_node).value.func_name = (yyvsp[-3].string_val);
+  (yyval.func_call_node).params          = (yyvsp[-1].exp_list);
 }
 #line 1933 "src/parser/monga_parser.c" /* yacc.c:1646  */
     break;

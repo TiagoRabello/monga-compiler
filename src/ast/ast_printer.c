@@ -215,7 +215,7 @@ void print_ast_var_node(FILE *out, const ast_var_node *node)
   switch (node->tag)
   {
     case non_indexed:
-      fprintf(out, "%s", node->value.non_indexed.var_name);
+      fprintf(out, "%s", node->value.non_indexed.value.var_name);
       break;
     case indexed:
       print_ast_exp_node(out, node->value.indexed.base);
@@ -229,7 +229,7 @@ void print_ast_var_node(FILE *out, const ast_var_node *node)
 void print_ast_func_call_node(FILE *out, const ast_func_call_node *node)
 {
   exp_list_node *param;
-  fprintf(out, "%s(", node->func_name);
+  fprintf(out, "%s(", node->value.func_name);
   for (param = node->params; param && param->next; param = param->next)
   {
     print_ast_exp_node(out, param->exp);
