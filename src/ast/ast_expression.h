@@ -48,6 +48,12 @@ struct _ast_exp_operator_new_node
   ast_exp_node *exp;
 };
 
+struct _ast_exp_type_cast_node
+{
+  ast_type      type;
+  ast_exp_node *exp;
+};
+
 // General Expresion node
 typedef enum
 {
@@ -58,7 +64,8 @@ typedef enum
   string_literal_tag,
   var_tag,
   func_call_tag,
-  operator_new_tag
+  operator_new_tag,
+  type_cast_tag
 
 } ast_exp_tag;
 
@@ -75,6 +82,7 @@ struct _ast_exp_node
     ast_var_node              var;
     ast_func_call_node        func_call;
     ast_exp_operator_new_node operator_new;
+    ast_exp_type_cast_node    type_cast;
 
   } value;
 

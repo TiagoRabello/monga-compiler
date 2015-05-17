@@ -27,6 +27,7 @@ void print_ast_statement_block_node    (FILE *out, const ast_statement_block_nod
 
 void print_ast_exp_node             (FILE *out, const ast_exp_node              *node);
 void print_ast_exp_operator_new_node(FILE *out, const ast_exp_operator_new_node *node);
+void print_ast_exp_type_cast_node   (FILE *out, const ast_exp_type_cast_node    *node);
 void print_ast_exp_binop_node       (FILE *out, const ast_exp_binop_node        *node);
 void print_ast_exp_unop_node        (FILE *out, const ast_exp_unop_node         *node);
 

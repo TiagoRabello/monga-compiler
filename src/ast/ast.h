@@ -11,6 +11,7 @@ typedef struct _ast_exp_node              ast_exp_node;
 typedef struct _ast_exp_binop_node        ast_exp_binop_node;
 typedef struct _ast_exp_unop_node         ast_exp_unop_node;
 typedef struct _ast_exp_operator_new_node ast_exp_operator_new_node;
+typedef struct _ast_exp_type_cast_node ast_exp_type_cast_node;
 
 // Forward declaration of Statement Nodes.
 typedef struct _ast_statement_node         ast_statement_node;

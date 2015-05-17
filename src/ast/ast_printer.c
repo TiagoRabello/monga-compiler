@@ -198,7 +198,18 @@ void print_ast_exp_node(FILE *out, const ast_exp_node *node)
     case operator_new_tag:
       print_ast_exp_operator_new_node(out, &(node->value.operator_new));
       break;
+    case type_cast_tag:
+      print_ast_exp_type_cast_node(out, &(node->value.type_cast));
+      break;
   }
+}
+
+void print_ast_exp_type_cast_node(FILE *out, const ast_exp_type_cast_node *node)
+{
+  print_ast_type(out, node->type);
+  fprintf(out, "(");
+  print_ast_exp_node(out, node->exp);
+  fprintf(out, ")");
 }
 
 void print_ast_exp_operator_new_node(FILE *out, const ast_exp_operator_new_node *node)
