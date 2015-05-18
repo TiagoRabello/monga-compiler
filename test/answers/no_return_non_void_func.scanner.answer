@@ -1,0 +1,5 @@
+<TK_INT_T> <TK_ID>[foo]()
+{
+  <TK_INT_T> <TK_ID>[a];
+  <TK_ID>[a] = <TK_INT_LITERAL>[1];
+}

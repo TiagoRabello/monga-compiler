@@ -10,6 +10,7 @@
 ###############################################################################
 AST_DIR=src/ast
 BIN_DIR=bin
+COMMON_DIR=src/common
 SCANNER_DIR=src/scanner
 PARSER_DIR=src/parser
 SEMANTIC_DIR=src/semantic
@@ -22,31 +23,33 @@ TEST_ANSWERS_DIR=test/answers
 LEX=flex
 YACC=bison
 DIFF=diff
-#CC=gcc
+CC=gcc
 
 ###############################################################################
 # Test file names
 ###############################################################################
-SEMANTIC_POSITIVE_TEST_NAMES = fibonacci \
+SEMANTIC_POSITIVE_TEST_NAMES = array \
                                commented_out \
+                               empty_block \
+                               empty_return \
+                               fibonacci \
                                operators \
                                program_inside_string \
-                               empty_block \
-                               array \
-                               empty_return \
                                use_var_inner_scope
-SEMANTIC_NEGATIVE_TEST_NAMES = hello_world \
-                               use_undefined_var \
-                               use_var_outside_scope \
+SEMANTIC_NEGATIVE_TEST_NAMES = assign_type_mismatch \
                                call_func_before_decl \
-                               assign_type_mismatch \
+                               decl_void_var \
+                               hello_world \
                                index_non_indexable \
+                               no_return_non_void_func \
                                non_int_if_condition \
                                non_int_while_condition \
-                               decl_void_var \
                                too_few_args \
                                too_many_args \
-                               type_mismatch_args
+                               type_mismatch_args \
+                               type_mismatch_return \
+                               use_undefined_var \
+                               use_var_outside_scope
 
 PARSER_POSITIVE_TEST_NAMES = ${SEMANTIC_POSITIVE_TEST_NAMES} ${SEMANTIC_NEGATIVE_TEST_NAMES}
 PARSER_NEGATIVE_TEST_NAMES = global_statement single_line_decl_def no_name_param decl_var_mid_block
@@ -175,13 +178,18 @@ $(BIN_DIR)/parser_test_main.o: $(PARSER_DIR)/test.c $(PARSER_DIR)/monga_parser.h
 
 # Semantics related files.
 
-$(BIN_DIR)/resolve_ids.o: $(SEMANTIC_DIR)/resolve_ids.c $(SEMANTIC_DIR)/semantic.h $(AST_DIR)/ast.h
+$(BIN_DIR)/resolve_ids.o: $(SEMANTIC_DIR)/resolve_ids.c \
+                          $(SEMANTIC_DIR)/semantic.h \
+                          $(AST_DIR)/ast.h \
+                          $(AST_DIR)/ast_printer.h \
+                          $(COMMON_DIR)/diagnostics.h
 	$(CC) -c -o $@ $<
 
 $(BIN_DIR)/resolve_types.o: $(SEMANTIC_DIR)/resolve_types.c \
                             $(SEMANTIC_DIR)/semantic.h \
                             $(AST_DIR)/ast.h \
-                            $(AST_DIR)/ast_printer.h
+                            $(AST_DIR)/ast_printer.h \
+                            $(COMMON_DIR)/diagnostics.h
 	$(CC) -c -o $@ $<
 
 $(BIN_DIR)/semantic_test_main.o: $(SEMANTIC_DIR)/test.c \

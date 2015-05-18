@@ -1,0 +1,4 @@
+<TK_INT_T> <TK_ID>[foo]()
+{
+  <TK_RETURN> <TK_STRING_LITERAL>["hi"];
+}

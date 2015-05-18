@@ -51,4 +51,6 @@ int main()
   a = b >= a;
   a = b < a;
   a = b > a;
+
+  return a;
 }

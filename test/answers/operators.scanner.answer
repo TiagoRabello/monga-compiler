@@ -51,4 +51,6 @@
   <TK_ID>[a] = <TK_ID>[b] <TK_GEQ> <TK_ID>[a];
   <TK_ID>[a] = <TK_ID>[b] < <TK_ID>[a];
   <TK_ID>[a] = <TK_ID>[b] > <TK_ID>[a];
+
+  <TK_RETURN> <TK_ID>[a];
 }
