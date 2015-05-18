@@ -262,7 +262,7 @@ void print_ast_func_call_node(FILE *out, const ast_func_call_node *node)
 
 void print_ast_exp_binop_node(FILE *out, const ast_exp_binop_node *node)
 {
-  static const char *binops[] = { "+", "-", "*", "/", "=", "<=", ">=", ">", "<", "&&", "||" };
+  static const char *binops[] = { "+", "-", "*", "/", "==", "<=", ">=", ">", "<", "&&", "||" };
 
   print_ast_exp_node(out, node->exp1);
   fprintf(out, " %s ", binops[node->tag]);
