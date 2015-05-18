@@ -1,0 +1,14 @@
+#ifndef DIAGNOSTICS_H
+#define DIAGNOSTICS_H
+
+#define RED_LABEL    "\033[0;31m"
+#define YELLOW_LABEL "\033[0;33m"
+#define GREEN_LABEL  "\033[0;32m"
+#define CYAN_LABEL   "\033[0;36m"
+#define NORMAL_LABEL "\033[0m"
+
+#define ERROR_LABEL   RED_LABEL"Error: "NORMAL_LABEL
+#define WARNING_LABEL YELLOW_LABEL"Warning: "NORMAL_LABEL
+#define INFO_LABEL    CYAN_LABEL"Note: "NORMAL_LABEL
+
+#endif

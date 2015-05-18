@@ -1,11 +1,14 @@
 #include "semantic.h"
 
 #include "../ast/ast.h"
+#include "../ast/ast_printer.h"
+#include "../common/diagnostics.h"
 
 #include <assert.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct
 {
@@ -38,8 +41,8 @@ void symbol_table_insert(symbol_table *table, const char *symbol, ast_decl_node 
   if (table->end == table->end_capacity)
   {
     size_t old_capacity = (table->end_capacity - table->begin);
-    size_t new_capacity = (old_capacity) ? old_capacity * 2 : 10;
-    table->begin        = (symbol_table_cell *)realloc(table->begin, new_capacity);
+    size_t new_capacity = (old_capacity) ? (old_capacity) * 2 : 10;
+    table->begin        = (symbol_table_cell *)realloc(table->begin, new_capacity * sizeof(symbol_table_cell));
     table->end          = table->begin + old_capacity;
     table->end_capacity = table->begin + new_capacity;
   }
@@ -49,18 +52,54 @@ void symbol_table_insert(symbol_table *table, const char *symbol, ast_decl_node 
   ++(table->end);
 }
 
-symbol_table_cell * symbol_table_find(symbol_table *table, const char *symbol)
+symbol_table_cell * symbol_table_find_iter(symbol_table_cell *first, symbol_table_cell *last, const char *symbol)
 {
-  symbol_table_cell *first = table->begin;
-  symbol_table_cell *last  = table->end;
-
+  symbol_table_cell *end = last;
   while (first != last)
   {
     if (strcmp((last - 1)->symbol, symbol) == 0) { break; }
     --last;
   }
 
-  return (first != last) ? (last - 1) : table->end;
+  return (first != last) ? (last - 1) : end;
+}
+
+symbol_table_cell * symbol_table_find(symbol_table *table, const char *symbol)
+{
+  return symbol_table_find_iter(table->begin, table->end, symbol);
+}
+
+void report_redeclaration_error(ast_decl_node *prev_decl, ast_decl_node *curr_decl)
+{
+  switch (curr_decl->tag)
+  {
+    case decl_var_tag:
+      fprintf(stderr, ERROR_LABEL "Redeclaration of variable within same scope: ");
+      break;
+    case decl_func_tag:
+      fprintf(stderr, ERROR_LABEL "Redeclaration of function within same scope: ");
+      break;
+  }
+  print_ast_decl_node(stderr, curr_decl, 0);
+  fprintf(stderr, INFO_LABEL "Previously declared as: ");
+  print_ast_decl_node(stderr, prev_decl, 0);
+  exit(1);
+}
+
+void report_shadowing_warning(ast_decl_node *prev_decl, ast_decl_node *curr_decl)
+{
+  switch (curr_decl->tag)
+  {
+    case decl_var_tag:
+      fprintf(stderr, WARNING_LABEL "Variable declaration hides previous declared on an outter scope: ");
+      break;
+    case decl_func_tag:
+      fprintf(stderr, WARNING_LABEL "Function declaration hides previous declared on an outter scope: ");
+      break;
+  }
+  print_ast_decl_node(stderr, curr_decl, 0);
+  fprintf(stderr, INFO_LABEL "Outter declaration: ");
+  print_ast_decl_node(stderr, prev_decl, 0);
 }
 
 void resolve_ids_exp         (ast_exp_node              *node, symbol_table *table);
@@ -82,19 +121,26 @@ void resolve_ids_var      (ast_var_node       *node, symbol_table *table);
 
 void resolve_ids(ast_program_node *ast)
 {
+  symbol_table_cell *itr;
+  symbol_table       table = { NULL, NULL, NULL };
+  ast_decl_node     *node  = ast;
+
   assert(ast);
 
-  symbol_table table = { NULL, NULL, NULL };
-
-  ast_decl_node *node = ast;
   for (; node; node = node->next)
   {
     switch (node->tag)
     {
       case decl_var_tag:
+        itr = symbol_table_find(&table, node->value.decl_var.name);
+        if (itr != table.end) { report_redeclaration_error(itr->decl, node); }
+
         symbol_table_insert(&table, node->value.decl_var.name, node);
         break;
       case decl_func_tag:
+        itr = symbol_table_find(&table, node->value.decl_func.name);
+        if (itr != table.end) { report_redeclaration_error(itr->decl, node); }
+
         symbol_table_insert(&table, node->value.decl_func.name, node);
         resolve_ids_func(&(node->value.decl_func), &table);
         break;
@@ -183,7 +229,9 @@ void resolve_ids_func_call(ast_func_call_node *node, symbol_table *table)
   }
   else
   {
-    fprintf(stderr, "Undefined function: %s\n", node->value.func_name);
+    fprintf(stderr, ERROR_LABEL"Call to undefined function: ");
+    print_ast_func_call_node(stderr, node);
+    fprintf(stderr, "\n");
     exit(1);
   } 
 
@@ -202,6 +250,17 @@ void resolve_ids_block(ast_statement_block_node *node, symbol_table *table)
   for (decl_node = node->decl_vars; decl_node; decl_node = decl_node->next)
   {
     assert(node->decl_vars->tag == decl_var_tag);
+
+    symbol_table_cell *first = table->begin + original_size;
+    symbol_table_cell *last  = table->end;
+    symbol_table_cell *itr   = symbol_table_find_iter(first, last, decl_node->value.decl_var.name);
+    if (itr != last) { report_redeclaration_error(itr->decl, decl_node); }
+
+    first = table->begin;
+    last  = table->begin + original_size;
+    itr   = symbol_table_find_iter(first, last, decl_node->value.decl_var.name);
+    if (itr != last) { report_shadowing_warning(itr->decl, decl_node); }
+
     symbol_table_insert(table, decl_node->value.decl_var.name, decl_node);
   }
 
@@ -247,6 +306,17 @@ void resolve_ids_func(ast_decl_func_node *node, symbol_table *table)
   for (param = node->params; param; param = param->next)
   {
     assert(param->tag == decl_var_tag);
+
+    symbol_table_cell *first = table->begin + original_size;
+    symbol_table_cell *last  = table->end;
+    symbol_table_cell *itr   = symbol_table_find_iter(first, last, param->value.decl_var.name);
+    if (itr != last) { report_redeclaration_error(itr->decl, param); }
+
+    first = table->begin;
+    last  = table->begin + original_size;
+    itr   = symbol_table_find_iter(first, last, param->value.decl_var.name);
+    if (itr != last) { report_shadowing_warning(itr->decl, param); }
+
     symbol_table_insert(table, param->value.decl_var.name, param);
   }
 
@@ -269,7 +339,9 @@ void resolve_ids_var(ast_var_node *node, symbol_table *table)
         }
         else
         {
-          fprintf(stderr, "Undefined variable: %s\n", node->value.non_indexed.value.var_name);
+          fprintf(stderr, ERROR_LABEL"Use of undefined variable: ");
+          print_ast_var_node(stderr, node);
+          fprintf(stderr, "\n");
           exit(1);
         } 
       }
