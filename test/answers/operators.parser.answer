@@ -2,7 +2,7 @@ int main()
 {
   int a;
   a = 1;
-  a = -;
+  a = -a;
   a = a + 1;
   a = a - 1;
   a = a * 1;
@@ -12,7 +12,7 @@ int main()
   a = a >= a;
   a = a < a;
   a = a > a;
-  a = !;
+  a = !a;
   a = a && a;
   a = a || a;
 }
