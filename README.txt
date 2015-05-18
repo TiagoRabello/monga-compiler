@@ -10,7 +10,9 @@
   * test_scanner  : Roda todos os testes referentes ao analisador léxico.
   * test_parser   : Roda todos os testes referentes ao analisador sintático.
   * test_semantic : Roda todos os testes referentes ao analisador semântico.
-  * monga_scanner : Gera o arquivo de objeto referente ao analisador léxico.
+  * scanner_test  : Gera o programa de testes do analisador léxico.
+  * parser_test   : Gera o programa de testes do analisador sintático.
+  * semantic_test : Gera o programa de testes do analisador semântico.
   * clean         : Remove todos os arquivos gerados pelo make.
 
 3. Estrutura do projeto:
@@ -22,3 +24,13 @@
   * src/semantic/ : Diretório onde ficam todos os fontes referentes ao analisador semântico.
   * test/answers/ : Diretório onde ficam as saídas corretas para os testes.
   * test/inputs/  : Diretório onde ficam as entradas para os testes.
+
+4. Testando Entradas Manualmente
+  Para testar manualmente algum dos analisadores basta gerar seu respectivo programa de teste e passar o arquivo monga como entrada.
+  Ex:
+    > make scanner_test
+    > bin/scanner_test < test/input/fibonacci.monga
+    > make parser_test
+    > bin/parser_test < test/input/fibonacci.monga
+    > make semantic_test
+    > bin/semantic_test < test/input/fibonacci.monga
