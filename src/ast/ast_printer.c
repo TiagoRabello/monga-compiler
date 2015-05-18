@@ -47,6 +47,14 @@ void print_ast_decl_var_node(FILE *out, const ast_decl_var_node *node, int inden
 
 void print_ast_decl_func_node(FILE *out, const ast_decl_func_node* node, int indent_level)
 {
+  print_ast_decl_func_signature(out, node, indent_level);
+
+  assert(node->body->tag == ast_statement_block_tag);
+  print_ast_statement_block_node(out, &node->body->value.block_node, indent_level);
+}
+
+void print_ast_decl_func_signature(FILE *out, const ast_decl_func_node* node, int indent_level)
+{
   ast_decl_node *param;
   PRINT_INDENTED(out, indent_level, "");
   print_ast_type(out, node->return_type);
@@ -64,8 +72,6 @@ void print_ast_decl_func_node(FILE *out, const ast_decl_func_node* node, int ind
     fprintf(out, " %s", param->value.decl_var.name);
   }
   fprintf(out, ")\n");
-  assert(node->body->tag == ast_statement_block_tag);
-  print_ast_statement_block_node(out, &node->body->value.block_node, indent_level);
 }
 
 void print_ast_statement_node(FILE *out, const ast_statement_node *node, int indent_level)
