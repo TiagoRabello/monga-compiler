@@ -24,17 +24,19 @@ void print_ast_type(FILE* out, ast_type type)
 
 void print_full_ast(FILE *out, const ast_program_node* node, int indent_level)
 {
-  for (; node; node = node->next)
+  for (; node; node = node->next) { print_ast_decl_node(out, node, indent_level); }
+}
+
+void print_ast_decl_node(FILE *out, const ast_decl_node* node, int indent_level)
+{
+  switch (node->tag)
   {
-    switch (node->tag)
-    {
-      case decl_var_tag:
-        print_ast_decl_var_node(out, &node->value.decl_var, indent_level);
-        break;
-      case decl_func_tag:
-        print_ast_decl_func_node(out, &node->value.decl_func, indent_level);
-        break;
-    }
+    case decl_var_tag:
+      print_ast_decl_var_node(out, &node->value.decl_var, indent_level);
+      break;
+    case decl_func_tag:
+      print_ast_decl_func_node(out, &node->value.decl_func, indent_level);
+      break;
   }
 }
 
