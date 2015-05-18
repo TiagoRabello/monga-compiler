@@ -160,6 +160,61 @@ ast_type resolve_types_exp(ast_exp_node *node)
 
 ast_type resolve_types_func_call(ast_func_call_node *node)
 {
+  int num_processed_params = 0;
+  exp_list_node *param;
+  ast_decl_node *param_decl;
+  for (param = node->params, param_decl = node->value.decl->value.decl_func.params; param && param_decl; param = param->next, param_decl = param_decl->next)
+  {
+    ast_type exp_type   = resolve_types_exp(param->exp);
+    ast_type param_type = param_decl->value.decl_var.type;
+
+    if (param_type.type != exp_type.type || param_type.dimensions != exp_type.dimensions)
+    {
+      fprintf(stderr, "Error: Cannot pass a value of ");
+      print_ast_type(stderr, exp_type);
+      fprintf(stderr, " type as argument to a function waiting on ");
+      print_ast_type(stderr, param_type);
+      fprintf(stderr, " type: ");
+      print_ast_exp_node(stderr, param->exp);
+      fprintf(stderr, "\n");
+      fprintf(stderr, "Note: Argument at position %d of function call: ", num_processed_params);
+      print_ast_func_call_node(stderr, node);
+      fprintf(stderr, " | ");
+      print_ast_decl_func_signature(stderr, &(node->value.decl->value.decl_func), 0);
+      exit(1);
+    }
+
+    ++num_processed_params;
+  }
+
+  if (param != NULL)
+  {
+    int extra_params = 0;
+    while (param) { param = param->next; ++extra_params; }
+
+    fprintf(stderr, "Error: Too many arguments to function %s: ", node->value.decl->value.decl_func.name);
+    print_ast_func_call_node(stderr, node);
+    fprintf(stderr, "\nNote: Function expecting %d parameter%s but called with %d: ", num_processed_params
+                                                                                    , (num_processed_params != 1) ? "s" : ""
+                                                                                    , num_processed_params + extra_params);
+    print_ast_decl_func_signature(stderr, &(node->value.decl->value.decl_func), 0);
+    exit(1);
+  }
+
+  if (param_decl != NULL)
+  {
+    int extra_params = 0;
+    while (param_decl) { param_decl = param_decl->next; ++extra_params; }
+
+    fprintf(stderr, "Error: Too few arguments to function %s: ", node->value.decl->value.decl_func.name);
+    print_ast_func_call_node(stderr, node);
+    fprintf(stderr, "\nNote: Function expecting %d parameter%s but called with %d: ", num_processed_params + extra_params
+                                                                                    , (num_processed_params + extra_params != 1) ? "s" : ""
+                                                                                    , num_processed_params);
+    print_ast_decl_func_signature(stderr, &(node->value.decl->value.decl_func), 0);
+    exit(1);
+  }
+
   return node->value.decl->value.decl_func.return_type;
 }
 

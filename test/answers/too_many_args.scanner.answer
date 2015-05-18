@@ -1,0 +1,10 @@
+<TK_VOID_T> <TK_ID>[foo](<TK_INT_T> <TK_ID>[a], <TK_FLOAT_T> <TK_ID>[b])
+{
+  
+}
+
+<TK_INT_T> <TK_ID>[main]()
+{
+  <TK_ID>[foo](<TK_INT_LITERAL>[1], <TK_FLOAT_LITERAL>[2.0], <TK_INT_LITERAL>[151], <TK_INT_LITERAL>[42]);
+  <TK_RETURN> <TK_INT_LITERAL>[0];
+}

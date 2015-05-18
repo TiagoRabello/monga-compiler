@@ -1,0 +1,8 @@
+void foo(int a,float b)
+{
+}
+int main()
+{
+  foo(1, 2.000000, 151, 42);
+  return 0;
+}

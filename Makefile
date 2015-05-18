@@ -43,7 +43,10 @@ SEMANTIC_NEGATIVE_TEST_NAMES = hello_world \
                                index_non_indexable \
                                non_int_if_condition \
                                non_int_while_condition \
-                               decl_void_var
+                               decl_void_var \
+                               too_few_args \
+                               too_many_args \
+                               type_mismatch_args
 
 PARSER_POSITIVE_TEST_NAMES = ${SEMANTIC_POSITIVE_TEST_NAMES} ${SEMANTIC_NEGATIVE_TEST_NAMES}
 PARSER_NEGATIVE_TEST_NAMES = global_statement single_line_decl_def no_name_param decl_var_mid_block
