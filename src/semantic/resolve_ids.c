@@ -56,11 +56,11 @@ symbol_table_cell * symbol_table_find(symbol_table *table, const char *symbol)
 
   while (first != last)
   {
-    if (strcmp(first->symbol, symbol) == 0) { break; }
-    ++first;
+    if (strcmp((last - 1)->symbol, symbol) == 0) { break; }
+    --last;
   }
 
-  return first;
+  return (first != last) ? (last - 1) : table->end;
 }
 
 void resolve_ids_exp         (ast_exp_node              *node, symbol_table *table);
