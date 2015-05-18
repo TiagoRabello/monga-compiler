@@ -9,6 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO: Verify return type.
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifndef TRUE
 #define TRUE (0 == 0)
 #endif
@@ -65,8 +69,6 @@ int is_convertible_to_int(ast_type type)
   }
 }
 
-// TODO: Verify return type.
-
 void resolve_types(ast_program_node *ast)
 {
   assert(ast);
@@ -120,6 +122,7 @@ ast_type resolve_types_exp(ast_exp_node *node)
   {
     case binop_tag:
       exp_type = resolve_types_binop(&(node->value.binop_node));
+      break;
     case unop_tag:
       exp_type = resolve_types_unop(&(node->value.unop_node));
       break;
@@ -277,6 +280,7 @@ ast_type resolve_types_binop(ast_exp_binop_node *node)
 
       if (lhs_type.type != exp_type.type) { add_type_cast(node->exp1, exp_type); }
       if (rhs_type.type != exp_type.type) { add_type_cast(node->exp2, exp_type); }
+
       break;
 
     case equal_tag:
