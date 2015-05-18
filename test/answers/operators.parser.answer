@@ -1,13 +1,15 @@
 int main()
 {
   int a;
+  float b;
   a = 1;
+  b = 1.000000;
   a = -a;
   a = a + 1;
   a = a - 1;
   a = a * 1;
   a = a / 1;
-  a = a = a;
+  a = a == a;
   a = a <= a;
   a = a >= a;
   a = a < a;
@@ -15,4 +17,24 @@ int main()
   a = !a;
   a = a && a;
   a = a || a;
+  b = -b;
+  b = b + 1.000000;
+  b = b - 1.000000;
+  b = b * 1.000000;
+  b = b / 1.000000;
+  a = b == b;
+  a = b <= b;
+  a = b >= b;
+  a = b < b;
+  a = b > b;
+  b = -b;
+  b = b + a;
+  b = b - a;
+  b = b * a;
+  b = b / a;
+  a = b == a;
+  a = b <= a;
+  a = b >= a;
+  a = b < a;
+  a = b > a;
 }

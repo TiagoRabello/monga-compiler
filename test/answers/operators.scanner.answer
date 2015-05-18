@@ -1,8 +1,11 @@
 <TK_INT_T> <TK_ID>[main]()
 {
   <TK_INT_T> <TK_ID>[a];
+  <TK_FLOAT_T> <TK_ID>[b];
   <TK_ID>[a] = <TK_INT_LITERAL>[1];
+  <TK_ID>[b] = <TK_FLOAT_LITERAL>[1.0];
 
+  <TK_COMMENT>[/* Integer operations */]
   <TK_ID>[a] = -<TK_ID>[a];
 
   <TK_ID>[a] = <TK_ID>[a] + <TK_INT_LITERAL>[1];
@@ -20,4 +23,32 @@
 
   <TK_ID>[a] = <TK_ID>[a] <TK_AND> <TK_ID>[a];
   <TK_ID>[a] = <TK_ID>[a] <TK_OR> <TK_ID>[a];
+
+  <TK_COMMENT>[/* Floating point operations */]
+  <TK_ID>[b] = -<TK_ID>[b];
+
+  <TK_ID>[b] = <TK_ID>[b] + <TK_FLOAT_LITERAL>[1.0];
+  <TK_ID>[b] = <TK_ID>[b] - <TK_FLOAT_LITERAL>[1.0];
+  <TK_ID>[b] = <TK_ID>[b] * <TK_FLOAT_LITERAL>[1.0];
+  <TK_ID>[b] = <TK_ID>[b] / <TK_FLOAT_LITERAL>[1.0];
+
+  <TK_ID>[a] = <TK_ID>[b] <TK_EQ> <TK_ID>[b];
+  <TK_ID>[a] = <TK_ID>[b] <TK_LEQ> <TK_ID>[b];
+  <TK_ID>[a] = <TK_ID>[b] <TK_GEQ> <TK_ID>[b];
+  <TK_ID>[a] = <TK_ID>[b] < <TK_ID>[b];
+  <TK_ID>[a] = <TK_ID>[b] > <TK_ID>[b];
+
+  <TK_COMMENT>[/* Mixed operations */]
+  <TK_ID>[b] = -<TK_ID>[b];
+
+  <TK_ID>[b] = <TK_ID>[b] + <TK_ID>[a];
+  <TK_ID>[b] = <TK_ID>[b] - <TK_ID>[a];
+  <TK_ID>[b] = <TK_ID>[b] * <TK_ID>[a];
+  <TK_ID>[b] = <TK_ID>[b] / <TK_ID>[a];
+
+  <TK_ID>[a] = <TK_ID>[b] <TK_EQ> <TK_ID>[a];
+  <TK_ID>[a] = <TK_ID>[b] <TK_LEQ> <TK_ID>[a];
+  <TK_ID>[a] = <TK_ID>[b] <TK_GEQ> <TK_ID>[a];
+  <TK_ID>[a] = <TK_ID>[b] < <TK_ID>[a];
+  <TK_ID>[a] = <TK_ID>[b] > <TK_ID>[a];
 }
