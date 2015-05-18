@@ -4,6 +4,7 @@
 #include "../ast/ast.h"
 
 int yylex(void);
+int yyparse(void);
 
 extern int               yylineno;
 extern ast_program_node *ast;
