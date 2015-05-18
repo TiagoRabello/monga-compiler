@@ -116,7 +116,7 @@ static int process_scapes(char *str);
   return TK_ID;
 }
 
-"/*"(.|\n)*"*/" {
+"/*"(\*[^/]|[^\*]|\n)*"*/" {
   PRINT_TOKEN_WITH_TEXT(TK_COMMENT);
   /*yylval.string_val = duplicate(yytext);
   return TK_COMMENT;*/
