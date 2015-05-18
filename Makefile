@@ -117,10 +117,6 @@ test_semantic: semantic_test
 		$(PRINT_RESULT_MSG);)
 	@echo "Done!"
 
-# Build lexical analyzer's object files.
-monga_scanner: $(BIN_DIR)/monga_scanner.o $(BIN_DIR)/monga_parser.o
-	$(CC) -o $(BIN_DIR)/$@ $^
-
 # Remove all generated files.
 clean:
 	rm -f out $(SCANNER_DIR)/monga_scanner.c \
