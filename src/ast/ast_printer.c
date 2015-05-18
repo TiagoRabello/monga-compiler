@@ -274,4 +274,5 @@ void print_ast_exp_unop_node(FILE *out, const ast_exp_unop_node *node)
   static const char *unops = "-!";
   
   fprintf(out, "%c", unops[node->tag]);
+  print_ast_exp_node(out, node->exp);
 }
