@@ -2087,14 +2087,14 @@ static int process_scapes(char *str)
   {
     switch (state)
     {
-      READING_CHAR:
+      case READING_CHAR:
 
         if (*str != '\\') { *output++ = *str; }
         else { state = READING_SCAPE; }
 
         break;
 
-      READING_SCAPE:
+      case READING_SCAPE:
         switch (*str)
         {
           case 't':
@@ -2109,9 +2109,12 @@ static int process_scapes(char *str)
           default:
             return 1;
         }
+        state = READING_CHAR;
         break;
     }
   }
+
+  *output++ = '\0';
   return 0;
 }
 

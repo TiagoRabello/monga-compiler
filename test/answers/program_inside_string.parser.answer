@@ -1,5 +1,6 @@
 char[] str;
 int main()
 {
-  str = "int main() { printf(\"Hello world\"); }";
+  str = "int main() { printf("Hello world"); }";
+  return 0;
 }

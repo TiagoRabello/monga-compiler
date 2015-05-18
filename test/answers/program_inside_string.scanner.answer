@@ -3,4 +3,5 @@
 <TK_INT_T> <TK_ID>[main]()
 {
   <TK_ID>[str] = <TK_STRING_LITERAL>["int main() { printf(\"Hello world\"); }"];
+  <TK_RETURN> <TK_INT_LITERAL>[0];
 }
