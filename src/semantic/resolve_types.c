@@ -151,45 +151,44 @@ void resolve_types_decl_func(ast_decl_func_node *node)
 
 ast_type resolve_types_exp(ast_exp_node *node)
 {
-  ast_type exp_type;
   switch (node->tag)
   {
     case binop_tag:
-      exp_type = resolve_types_binop(&(node->value.binop_node));
+      node->type = resolve_types_binop(&(node->value.binop_node));
       break;
     case unop_tag:
-      exp_type = resolve_types_unop(&(node->value.unop_node));
+      node->type = resolve_types_unop(&(node->value.unop_node));
       break;
     case float_literal_tag:
-      exp_type.type = ast_float_type;
-      exp_type.dimensions = 0;
+      node->type.type = ast_float_type;
+      node->type.dimensions = 0;
       break;
     case int_literal_tag:
-      exp_type.type = ast_int_type;
-      exp_type.dimensions = 0;
+      node->type.type = ast_int_type;
+      node->type.dimensions = 0;
       break;
     case string_literal_tag:
-      exp_type.type = ast_char_type;
-      exp_type.dimensions = 1;
+      node->type.type = ast_char_type;
+      node->type.dimensions = 1;
       break;
     case var_tag:
-      exp_type = resolve_types_var(&(node->value.var));
-      if (exp_type.type == ast_char_type && exp_type.dimensions == 0)
+      node->type = resolve_types_var(&(node->value.var));
+      if (node->type.type == ast_char_type && node->type.dimensions == 0)
       {
         ast_type cast_type = { ast_int_type, 0 };
         add_type_cast(node, cast_type);
       }
       break;
     case func_call_tag:
-      exp_type = resolve_types_func_call(&(node->value.func_call));
+      node->type = resolve_types_func_call(&(node->value.func_call));
       break;
     case operator_new_tag:
-      exp_type.type = ast_int_type;
-      exp_type.dimensions = 0;
+      node->type.type = ast_int_type;
+      node->type.dimensions = 0;
       break;
   }
 
-  return exp_type;
+  return node->type;
 }
 
 ast_type resolve_types_func_call(ast_func_call_node *node)

@@ -1,6 +1,6 @@
 void foo()
 {
   int[] numbers;
-  numbers = new int[2 + 3];
-  numbers[1 + 2] = 5;
+  numbers = new int[(2 + 3)];
+  numbers[(1 + 2)] = 5;
 }

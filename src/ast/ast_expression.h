@@ -71,6 +71,7 @@ typedef enum
 
 struct _ast_exp_node
 {
+  ast_type type;
   ast_exp_tag tag;
   union
   {
