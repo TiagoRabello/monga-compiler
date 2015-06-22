@@ -9,6 +9,7 @@
 # Working directories
 ###############################################################################
 AST_DIR=src/ast
+BACKEND_DIR=src/backend
 BIN_DIR=bin
 COMMON_DIR=src/common
 SCANNER_DIR=src/scanner
@@ -28,14 +29,16 @@ CC=gcc
 ###############################################################################
 # Test file names
 ###############################################################################
-SEMANTIC_POSITIVE_TEST_NAMES = array \
-                               commented_out \
-                               empty_block \
-                               empty_return \
-                               fibonacci \
-                               operators \
-                               program_inside_string \
-                               use_var_inner_scope
+BACKEND_POSITIVE_TEST_NAMES = array \
+                              commented_out \
+                              empty_block \
+                              empty_return \
+                              fibonacci \
+                              operators \
+                              program_inside_string \
+                              use_var_inner_scope
+
+SEMANTIC_POSITIVE_TEST_NAMES = ${BACKEND_POSITIVE_TEST_NAMES}
 SEMANTIC_NEGATIVE_TEST_NAMES = assign_type_mismatch \
                                call_func_before_decl \
                                decl_void_var \
@@ -70,7 +73,16 @@ PRINT_RESULT_MSG=/usr/bin/test "$$?" -eq 0 && echo -e $(SUCCESS_MSG) || echo -e 
 ###############################################################################
 # Targets
 ###############################################################################
-test: test_scanner test_parser test_semantic
+test: test_scanner test_parser test_semantic test_backend
+
+# Run every backend test.
+test_backend: backend_test
+	@echo "Starting backend tests:"
+	@$(foreach name, $(BACKEND_POSITIVE_TEST_NAMES), \
+		echo -n "- Testing input $(name).monga..."; \
+		$(BIN_DIR)/$< < $(TEST_INPUT_DIR)/$(name).monga; \
+		$(PRINT_RESULT_MSG);)
+	@echo "Done!"
 
 # Run every lexical analyzer test.
 test_scanner: scanner_test
@@ -143,9 +155,30 @@ semantic_test: $(BIN_DIR)/monga_scanner.o \
                $(BIN_DIR)/semantic_test_main.o
 	$(CC) -o $(BIN_DIR)/$@ $^
 
+backend_test: $(BIN_DIR)/monga_scanner.o \
+              $(BIN_DIR)/monga_parser.o \
+              $(BIN_DIR)/ast_printer.o \
+              $(BIN_DIR)/resolve_ids.o \
+              $(BIN_DIR)/resolve_types.o \
+              $(BIN_DIR)/ia32_assembly.o \
+              $(BIN_DIR)/backend_test_main.o
+	$(CC) -o $(BIN_DIR)/$@ $^
+
 # AST related files.
 $(BIN_DIR)/ast_printer.o: $(AST_DIR)/ast_printer.c $(AST_DIR)/ast_printer.h $(AST_DIR)/ast.h
 	$(CC) -c -o $@ $<
+
+# Backend related files.
+$(BIN_DIR)/ia32_assembly.o: $(BACKEND_DIR)/ia32_assembly.c \
+                            $(BACKEND_DIR)/ia32_assembly.h \
+                            $(AST_DIR)/ast.h \
+                            $(AST_DIR)/ast_printer.h \
+                            $(COMMON_DIR)/diagnostics.h
+	$(CC) -c -o $@ $<
+
+$(BIN_DIR)/backend_test_main.o: $(BACKEND_DIR)/test.c
+	$(CC) -c -o $@ $<
+
 
 # Scanner related files.
 
