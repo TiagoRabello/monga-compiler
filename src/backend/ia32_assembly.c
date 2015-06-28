@@ -69,7 +69,7 @@ static void gen_ia32_statement(FILE *output, ast_statement_node         *node, i
 static void gen_ia32_if_else  (FILE *output, ast_statement_if_else_node *node, int initial_offset);
 static void gen_ia32_while    (FILE *output, ast_statement_while_node   *node, int initial_offset);
 static void gen_ia32_assign   (FILE *output, ast_statement_assign_node  *node);
-static void gen_ia32_return   (FILE *output, ast_statement_return_node  *node, int initial_offset);
+static void gen_ia32_return   (FILE *output, ast_statement_return_node  *node);
 static void gen_ia32_block    (FILE *output, ast_statement_block_node   *node, int initial_offset);
 
 static int  gen_ia32_func_call_params(FILE *output, exp_list_node *node);
@@ -423,7 +423,7 @@ static void gen_ia32_assign(FILE *output, ast_statement_assign_node *node)
   fprintf(output, "    movl  %%eax, (%%ecx)\n");
 }
 
-static void gen_ia32_return(FILE *output, ast_statement_return_node *node, int initial_offset)
+static void gen_ia32_return(FILE *output, ast_statement_return_node *node)
 {
   if (node->exp)
   {
@@ -469,7 +469,7 @@ static void gen_ia32_statement(FILE *output, ast_statement_node *node, int initi
       gen_ia32_assign(output, &(node->value.assign_node));
       break;
     case ast_statement_return_tag:
-      gen_ia32_return(output, &(node->value.return_node), initial_offset);
+      gen_ia32_return(output, &(node->value.return_node));
       break;
     case ast_statement_func_call_tag:
       gen_ia32_func_call(output, &(node->value.func_call_node));
