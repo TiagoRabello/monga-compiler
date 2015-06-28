@@ -5,6 +5,6 @@
 
 #include <stdio.h>
 
-void generate_ia32_assembly(FILE *output, ast_program_node *ast);
+void gen_ia32(FILE *output, ast_program_node *ast);
 
 #endif

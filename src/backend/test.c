@@ -18,7 +18,7 @@ int main()
   {
     resolve_ids(ast);
     resolve_types(ast);
-    generate_ia32_assembly(stdout, ast);
+    gen_ia32(stdout, ast);
     /*PRINTF_HEADER("Program is " GREEN_LABEL "OK" NORMAL_LABEL ".\n");*/
   }
 
