@@ -20,10 +20,15 @@
     <TK_INT_T> <TK_ID>[temp];
     <TK_ID>[temp]  = <TK_ID>[prev1];
     <TK_ID>[prev1] = <TK_ID>[prev2];
-    <TK_ID>[prev2] = <TK_ID>[prev1] + <TK_ID>[prev2];
+    <TK_ID>[prev2] = <TK_ID>[temp] + <TK_ID>[prev2];
     
     <TK_ID>[n] = <TK_ID>[n] - <TK_INT_LITERAL>[1];
   }
 
   <TK_RETURN> <TK_ID>[prev2];
+}
+
+<TK_INT_T> <TK_ID>[monga_main]()
+{
+  <TK_RETURN> <TK_ID>[slow_fibonacci](<TK_INT_LITERAL>[6]);
 }

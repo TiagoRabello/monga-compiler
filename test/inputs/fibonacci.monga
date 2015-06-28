@@ -20,10 +20,15 @@ int fast_fibonacci(int n)
     int temp;
     temp  = prev1;
     prev1 = prev2;
-    prev2 = prev1 + prev2;
+    prev2 = temp + prev2;
     
     n = n - 1;
   }
 
   return prev2;
+}
+
+int monga_main()
+{
+  return slow_fibonacci(6);
 }
