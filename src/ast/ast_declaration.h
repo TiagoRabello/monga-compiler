@@ -8,6 +8,7 @@ struct _ast_decl_var_node
 {
   const char *name;
   ast_type    type;
+  int         asm_offset;
 };
 
 struct _ast_decl_func_node
