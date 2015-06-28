@@ -4,6 +4,15 @@
 #include "ast_common.h"
 #include "ast_expression.h"
 
+/* Describes if the function returned inside a given statement. */
+typedef enum
+{
+  didnt_return,
+  maybe_returned,
+  returned
+
+} return_status;
+
 // Return node
 struct _ast_statement_return_node
 {
@@ -15,6 +24,7 @@ struct _ast_statement_block_node
 {
   ast_decl_node      *decl_vars;
   ast_statement_node *statements;
+  return_status       ret_status;
 };
 
 // If else node

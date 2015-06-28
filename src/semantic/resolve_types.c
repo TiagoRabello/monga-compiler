@@ -10,10 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-// TODO: Verify return type.
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
 #ifndef TRUE
 #define TRUE (0 == 0)
 #endif
@@ -25,15 +21,6 @@
 #ifndef MAX
 #define MAX(A,B) (((A) > (B)) ? (A) : (B))
 #endif
-
-/* Describes if the function returned inside a given statement. */
-typedef enum
-{
-  didnt_return,
-  maybe_returned,
-  returned
-
-} return_status;
 
 void resolve_types_decl     (ast_decl_node      *node);
 void resolve_types_decl_var (ast_decl_var_node  *node);
@@ -639,6 +626,7 @@ return_status resolve_types_block(ast_statement_block_node *node, ast_type expec
     ret_status = MAX(ret_status, resolve_types_statement(statement_node, expected_return_type));
   }
 
+  node->ret_status = ret_status;
   return ret_status;
 }
 
