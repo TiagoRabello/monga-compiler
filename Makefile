@@ -177,8 +177,11 @@ compiler: $(BIN_DIR)/monga_scanner.o \
           $(BIN_DIR)/compiler_main.o
 	$(CC) -o $(BIN_DIR)/$@ $^
 
+# Compiler related files.
 compile: $(BIN_DIR)/compiler
 	@$^ < $(src) > out.s && $(CC) -c out.s -o out.o && $(CC) src/runtime/main.c out.o -o out.exe
+
+$(BIN_DIR)/compiler: compiler
 
 $(BIN_DIR)/compiler_main.o: $(SRC_DIR)/main.c
 	$(CC) -c -o $@ $<
