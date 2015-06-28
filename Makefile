@@ -8,13 +8,16 @@
 ###############################################################################
 # Working directories
 ###############################################################################
+BIN_DIR=bin
+
 AST_DIR=src/ast
 BACKEND_DIR=src/backend
-BIN_DIR=bin
 COMMON_DIR=src/common
-SCANNER_DIR=src/scanner
 PARSER_DIR=src/parser
+SCANNER_DIR=src/scanner
 SEMANTIC_DIR=src/semantic
+SRC_DIR=src
+
 TEST_INPUT_DIR=test/inputs
 TEST_ANSWERS_DIR=test/answers
 
@@ -80,9 +83,10 @@ test_backend: backend_test
 	@echo "Starting backend tests:"
 	@$(foreach name, $(BACKEND_POSITIVE_TEST_NAMES), \
 		echo -n "- Testing input $(name).monga..."; \
-		$(BIN_DIR)/$< < $(TEST_INPUT_DIR)/$(name).monga; \
+		$(BIN_DIR)/$< < $(TEST_INPUT_DIR)/$(name).monga > out; \
 		$(PRINT_RESULT_MSG);)
 	@echo "Done!"
+	@rm out
 
 # Run every lexical analyzer test.
 test_scanner: scanner_test
@@ -163,6 +167,21 @@ backend_test: $(BIN_DIR)/monga_scanner.o \
               $(BIN_DIR)/ia32_assembly.o \
               $(BIN_DIR)/backend_test_main.o
 	$(CC) -o $(BIN_DIR)/$@ $^
+
+compiler: $(BIN_DIR)/monga_scanner.o \
+          $(BIN_DIR)/monga_parser.o \
+          $(BIN_DIR)/ast_printer.o \
+          $(BIN_DIR)/resolve_ids.o \
+          $(BIN_DIR)/resolve_types.o \
+          $(BIN_DIR)/ia32_assembly.o \
+          $(BIN_DIR)/compiler_main.o
+	$(CC) -o $(BIN_DIR)/$@ $^
+
+compile: $(BIN_DIR)/compiler
+	@$^ < $(src) > out.s && $(CC) -c out.s -o out.o && $(CC) src/runtime/main.c out.o -o out.exe
+
+$(BIN_DIR)/compiler_main.o: $(SRC_DIR)/main.c
+	$(CC) -c -o $@ $<
 
 # AST related files.
 $(BIN_DIR)/ast_printer.o: $(AST_DIR)/ast_printer.c $(AST_DIR)/ast_printer.h $(AST_DIR)/ast.h
