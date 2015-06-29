@@ -1,0 +1,28 @@
+
+.text
+.data
+    str: .zero 4
+.text
+
+# int monga_main()
+.globl monga_main
+monga_main:
+    pushl %ebp
+    movl  %esp, %ebp
+# {
+# str = "int main() { printf(\"Hello world\"); }";
+.data
+    string_literal0: .string "int main() { printf(\"Hello world\"); }"
+.text
+    movl  $string_literal0, %eax
+    pushl %eax
+    movl  $str, %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# return 0;
+    movl  $0, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+

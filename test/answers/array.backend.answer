@@ -1,0 +1,51 @@
+
+.text
+# int monga_main()
+.globl monga_main
+monga_main:
+    pushl %ebp
+    movl  %esp, %ebp
+# {
+    subl  $4, %esp
+# numbers = new int[(2 + 3)];
+    movl  $3, %eax
+    pushl %eax
+    movl  $2, %eax
+    popl  %ecx
+    addl  %ecx, %eax #
+    shl   $2, %eax
+    pushl %eax
+    call  _malloc
+    addl  $4, %esp
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# numbers[(1 + 2)] = 5;
+    movl  $5, %eax
+    pushl %eax
+    movl  $2, %eax
+    pushl %eax
+    movl  $1, %eax
+    popl  %ecx
+    addl  %ecx, %eax #
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# return numbers[3];
+    movl  $3, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    movl  (%eax), %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+

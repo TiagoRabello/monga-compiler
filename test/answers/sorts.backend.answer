@@ -1,0 +1,868 @@
+
+.text
+# void swap_in_range(int[] vec,int pos1,int pos2)
+.globl swap_in_range
+swap_in_range:
+    pushl %ebp
+    movl  %esp, %ebp
+# {
+    subl  $4, %esp
+# temp = vec[pos1];
+    lea   12(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[pos1] = vec[pos2];
+    lea   16(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   12(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[pos2] = temp;
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   16(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+    addl  $4, %esp
+# }
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+
+# void bubble_sort(int[] vec,int first,int last)
+.globl bubble_sort
+bubble_sort:
+    pushl %ebp
+    movl  %esp, %ebp
+# {
+while_begin0:
+# while (last > (first + 1))
+    movl  $1, %eax
+    pushl %eax
+    lea   12(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    addl  %ecx, %eax #
+    pushl %eax
+    lea   16(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setg  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    while_end1
+# {
+    subl  $4, %esp
+# i = 1;
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+while_begin2:
+# while (i < last)
+    lea   16(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setl  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    while_end3
+# {
+    subl  $4, %esp
+# if (vec[i] < vec[(i - 1)])
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setl  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end4
+# {
+    subl  $4, %esp
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    call  swap_in_range
+    addl  $12, %esp
+    addl  $4, %esp
+# }
+if_end4:
+# i = (i + 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    addl  %ecx, %eax #
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+    addl  $4, %esp
+# }
+    jmp   while_begin2
+while_end3:
+# last = (last - 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   16(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   16(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+    addl  $4, %esp
+# }
+    jmp   while_begin0
+while_end1:
+    addl  $0, %esp
+# }
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+
+# void quick_sort(int[] vec,int first,int last)
+.globl quick_sort
+quick_sort:
+    pushl %ebp
+    movl  %esp, %ebp
+# {
+    subl  $12, %esp
+# if ((last - first) < 5)
+    movl  $5, %eax
+    pushl %eax
+    lea   12(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   16(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setl  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end5
+# {
+    subl  $12, %esp
+    lea   16(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   12(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    call  bubble_sort
+    addl  $12, %esp
+# return;
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end5:
+# val = vec[first];
+    lea   12(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# i = (first + 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   12(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    addl  %ecx, %eax #
+    pushl %eax
+    lea   -8(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# j = (last - 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   16(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   -12(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+while_begin6:
+# while (j > i)
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -12(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setg  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    while_end7
+# {
+    subl  $12, %esp
+while_begin8:
+# while ((i < j) && (vec[i] <= val))
+    lea   -12(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setl  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    and_short_circuit10
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setle %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    and_short_circuit10
+and_short_circuit10:
+    test  %eax, %eax
+    jz    while_end9
+# {
+    subl  $12, %esp
+# i = (i + 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    addl  %ecx, %eax #
+    pushl %eax
+    lea   -8(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+    addl  $12, %esp
+# }
+    jmp   while_begin8
+while_end9:
+while_begin11:
+# while ((j > i) && (vec[j] > val))
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -12(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setg  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    and_short_circuit13
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -12(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setg  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    and_short_circuit13
+and_short_circuit13:
+    test  %eax, %eax
+    jz    while_end12
+# {
+    subl  $12, %esp
+# j = (j - 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   -12(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   -12(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+    addl  $12, %esp
+# }
+    jmp   while_begin11
+while_end12:
+# if (j > i)
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -12(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setg  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end14
+# {
+    subl  $12, %esp
+    lea   -12(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    call  swap_in_range
+    addl  $12, %esp
+    addl  $12, %esp
+# }
+if_end14:
+    addl  $12, %esp
+# }
+    jmp   while_begin6
+while_end7:
+    movl  $1, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   12(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    call  swap_in_range
+    addl  $12, %esp
+    movl  $1, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   12(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    call  quick_sort
+    addl  $12, %esp
+    lea   16(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    call  quick_sort
+    addl  $12, %esp
+    addl  $12, %esp
+# }
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+
+# int monga_main()
+.globl monga_main
+monga_main:
+    pushl %ebp
+    movl  %esp, %ebp
+# {
+    subl  $8, %esp
+# n = 10;
+    movl  $10, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec = new int[n];
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    shl   $2, %eax
+    pushl %eax
+    call  _malloc
+    addl  $4, %esp
+    pushl %eax
+    lea   -8(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[0] = 7;
+    movl  $7, %eax
+    pushl %eax
+    movl  $0, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[1] = 3;
+    movl  $3, %eax
+    pushl %eax
+    movl  $1, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[2] = 4;
+    movl  $4, %eax
+    pushl %eax
+    movl  $2, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[3] = 8;
+    movl  $8, %eax
+    pushl %eax
+    movl  $3, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[4] = 6;
+    movl  $6, %eax
+    pushl %eax
+    movl  $4, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[5] = 5;
+    movl  $5, %eax
+    pushl %eax
+    movl  $5, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[6] = 2;
+    movl  $2, %eax
+    pushl %eax
+    movl  $6, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[7] = 0;
+    movl  $0, %eax
+    pushl %eax
+    movl  $7, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[8] = 9;
+    movl  $9, %eax
+    pushl %eax
+    movl  $8, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[9] = 1;
+    movl  $1, %eax
+    pushl %eax
+    movl  $9, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    movl  $0, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    call  bubble_sort
+    addl  $12, %esp
+while_begin15:
+# while (n > 0)
+    movl  $0, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setg  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    while_end16
+# {
+    subl  $8, %esp
+# if !(vec[(n - 1)] == (n - 1))
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end17
+# {
+    subl  $8, %esp
+# return -1;
+    movl  $1, %eax
+    negl  %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end17:
+# n = (n - 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+    addl  $8, %esp
+# }
+    jmp   while_begin15
+while_end16:
+# vec[0] = 7;
+    movl  $7, %eax
+    pushl %eax
+    movl  $0, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[1] = 3;
+    movl  $3, %eax
+    pushl %eax
+    movl  $1, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[2] = 4;
+    movl  $4, %eax
+    pushl %eax
+    movl  $2, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[3] = 8;
+    movl  $8, %eax
+    pushl %eax
+    movl  $3, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[4] = 6;
+    movl  $6, %eax
+    pushl %eax
+    movl  $4, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[5] = 5;
+    movl  $5, %eax
+    pushl %eax
+    movl  $5, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[6] = 2;
+    movl  $2, %eax
+    pushl %eax
+    movl  $6, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[7] = 0;
+    movl  $0, %eax
+    pushl %eax
+    movl  $7, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[8] = 9;
+    movl  $9, %eax
+    pushl %eax
+    movl  $8, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# vec[9] = 1;
+    movl  $1, %eax
+    pushl %eax
+    movl  $9, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    movl  $0, %eax
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    call  quick_sort
+    addl  $12, %esp
+while_begin18:
+# while (n > 0)
+    movl  $0, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setg  %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    while_end19
+# {
+    subl  $8, %esp
+# if !(vec[(n - 1)] == (n - 1))
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   -8(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    lea   (%eax, %ecx, 4), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end20
+# {
+    subl  $8, %esp
+# return -2;
+    movl  $2, %eax
+    negl  %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end20:
+# n = (n - 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+    addl  $8, %esp
+# }
+    jmp   while_begin18
+while_end19:
+# return 0;
+    movl  $0, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+

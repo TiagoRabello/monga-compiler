@@ -33,15 +33,16 @@ CC=gcc
 # Test file names
 ###############################################################################
 BACKEND_POSITIVE_TEST_NAMES = array \
-                              commented_out \
-                              empty_block \
-                              empty_return \
                               fibonacci \
                               operators \
                               program_inside_string \
-                              use_var_inner_scope
+                              sorts
 
-SEMANTIC_POSITIVE_TEST_NAMES = ${BACKEND_POSITIVE_TEST_NAMES}
+SEMANTIC_POSITIVE_TEST_NAMES = ${BACKEND_POSITIVE_TEST_NAMES} \
+                               commented_out \
+                               empty_block \
+                               empty_return \
+                               use_var_inner_scope
 SEMANTIC_NEGATIVE_TEST_NAMES = assign_type_mismatch \
                                call_func_before_decl \
                                decl_void_var \
@@ -83,7 +84,7 @@ test_backend: backend_test
 	@echo "Starting backend tests:"
 	@$(foreach name, $(BACKEND_POSITIVE_TEST_NAMES), \
 		echo -n "- Testing input $(name).monga..."; \
-		$(BIN_DIR)/$< < $(TEST_INPUT_DIR)/$(name).monga > out; \
+		$(BIN_DIR)/$< < $(TEST_INPUT_DIR)/$(name).monga > out && $(DIFF) out $(TEST_ANSWERS_DIR)/$(name).backend.answer; \
 		$(PRINT_RESULT_MSG);)
 	@echo "Done!"
 	@rm out
