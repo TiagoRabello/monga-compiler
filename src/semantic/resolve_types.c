@@ -53,6 +53,7 @@ void add_type_cast(ast_exp_node *node, ast_type type)
   ast_exp_node *new_node = (ast_exp_node *)malloc(sizeof(ast_exp_node));
   memcpy(new_node, node, sizeof(ast_exp_node));
   node->tag                  = type_cast_tag;
+  node->type                 = type;
   node->value.type_cast.type = type;
   node->value.type_cast.exp  = new_node;
 }
