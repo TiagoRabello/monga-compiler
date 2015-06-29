@@ -203,6 +203,7 @@ static int process_scapes(char *str)
             *output++ = '\n';
             break;
           case '\"':
+            *output++ = '\\';
             *output++ = '\"';
             break;
           default:
