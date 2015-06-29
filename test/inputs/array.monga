@@ -1,6 +1,8 @@
-void foo()
+int monga_main()
 {
   int[] numbers;
   numbers = new int[2 + 3];
   numbers[1+2] = 5;
+
+  return numbers[3];
 }
