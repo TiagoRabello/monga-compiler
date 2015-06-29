@@ -1,0 +1,1060 @@
+
+.text
+# int monga_main()
+.globl monga_main
+monga_main:
+    pushl %ebp
+    movl  %esp, %ebp
+# {
+    subl  $8, %esp
+# a = 1;
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# a = -a;
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    negl  %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !(a == -1)
+    movl  $1, %eax
+    negl  %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end0
+# {
+    subl  $8, %esp
+# return 1;
+    movl  $1, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end0:
+# a = (a + 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    addl  %ecx, %eax #
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !(a == 0)
+    movl  $0, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end1
+# {
+    subl  $8, %esp
+# return 2;
+    movl  $2, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end1:
+# a = (a - 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    subl  %ecx, %eax #
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !(a == -1)
+    movl  $1, %eax
+    negl  %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end2
+# {
+    subl  $8, %esp
+# return 3;
+    movl  $3, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end2:
+# a = (a * 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    imull %ecx, %eax #
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !(a == -1)
+    movl  $1, %eax
+    negl  %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end3
+# {
+    subl  $8, %esp
+# return 4;
+    movl  $4, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end3:
+# a = (a / 1);
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cdq
+    idivl %ecx
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !(a == -1)
+    movl  $1, %eax
+    negl  %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end4
+# {
+    subl  $8, %esp
+# return 5;
+    movl  $5, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end4:
+# a = (a == a);
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    sete  %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end5
+# {
+    subl  $8, %esp
+# return 6;
+    movl  $6, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end5:
+# a = (a <= a);
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setle %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end6
+# {
+    subl  $8, %esp
+# return 7;
+    movl  $7, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end6:
+# a = (a >= a);
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setge %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end7
+# {
+    subl  $8, %esp
+# return 8;
+    movl  $8, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end7:
+# a = (a < a);
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setl  %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jz    if_end8
+# {
+    subl  $8, %esp
+# return 9;
+    movl  $9, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end8:
+# a = (a > a);
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    popl  %ecx
+    cmpl  %ecx, %eax
+    setg  %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jz    if_end9
+# {
+    subl  $8, %esp
+# return 10;
+    movl  $10, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end9:
+# a = !a;
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end10
+# {
+    subl  $8, %esp
+# return 11;
+    movl  $11, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end10:
+# a = (a && a);
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jz    and_short_circuit11
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jz    and_short_circuit11
+and_short_circuit11:
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end12
+# {
+    subl  $8, %esp
+# return 12;
+    movl  $12, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end12:
+# a = (a || a);
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jnz   or_short_circuit13
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jnz   or_short_circuit13
+or_short_circuit13:
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end14
+# {
+    subl  $8, %esp
+# return 13;
+    movl  $13, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end14:
+# b = 1.000000;
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# b = -b;
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fchs
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# if !(b == -1.000000)
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    fchs
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end15
+# {
+    subl  $8, %esp
+# return 14;
+    movl  $14, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end15:
+# b = (b + 1.000000);
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    faddp
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# if !(b == 0.000000)
+    pushl $0x00000000
+    flds  (%esp)
+    addl  $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end16
+# {
+    subl  $8, %esp
+# return 15;
+    movl  $15, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end16:
+# b = (b - 1.000000);
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fsubp
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# if !(b == -1.000000)
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    fchs
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end17
+# {
+    subl  $8, %esp
+# return 16;
+    movl  $16, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end17:
+# b = (b * 1.000000);
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fmulp
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# if !(b == -1.000000)
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    fchs
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end18
+# {
+    subl  $8, %esp
+# return 17;
+    movl  $17, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end18:
+# b = (b / 1.000000);
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fdivp
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# if !(b == -1.000000)
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    fchs
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end19
+# {
+    subl  $8, %esp
+# return 18;
+    movl  $18, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end19:
+# a = (b == b);
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end20
+# {
+    subl  $8, %esp
+# return 19;
+    movl  $19, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end20:
+# a = (b <= b);
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    setbe %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end21
+# {
+    subl  $8, %esp
+# return 20;
+    movl  $20, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end21:
+# a = (b >= b);
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    setae %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end22
+# {
+    subl  $8, %esp
+# return 21;
+    movl  $21, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end22:
+# a = (b < b);
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    setb  %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jz    if_end23
+# {
+    subl  $8, %esp
+# return 22;
+    movl  $22, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end23:
+# a = (b > b);
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    seta  %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jz    if_end24
+# {
+    subl  $8, %esp
+# return 23;
+    movl  $23, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end24:
+# a = 1;
+    movl  $1, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# b = -1.000000;
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    fchs
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# b = (b + float(a));
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    fildl  (%esp)
+    addl   $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    faddp
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# if !(b == 0.000000)
+    pushl $0x00000000
+    flds  (%esp)
+    addl  $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end25
+# {
+    subl  $8, %esp
+# return 24;
+    movl  $24, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end25:
+# b = (b - float(a));
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    fildl  (%esp)
+    addl   $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fsubp
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# if !(b == -1.000000)
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    fchs
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end26
+# {
+    subl  $8, %esp
+# return 25;
+    movl  $25, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end26:
+# b = (b * float(a));
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    fildl  (%esp)
+    addl   $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fmulp
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# if !(b == -1.000000)
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    fchs
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end27
+# {
+    subl  $8, %esp
+# return 26;
+    movl  $26, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end27:
+# b = (b / float(a));
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    fildl  (%esp)
+    addl   $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fdivp
+    lea   -8(%ebp), %eax
+    fstps (%eax)
+# if !(b == -1.000000)
+    pushl $0x3f800000
+    flds  (%esp)
+    addl  $4, %esp
+    fchs
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end28
+# {
+    subl  $8, %esp
+# return 26;
+    movl  $26, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end28:
+# a = (b == float(a));
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    fildl  (%esp)
+    addl   $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    sete  %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jz    if_end29
+# {
+    subl  $8, %esp
+# return 27;
+    movl  $27, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end29:
+# a = (b <= float(a));
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    fildl  (%esp)
+    addl   $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    setbe %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end30
+# {
+    subl  $8, %esp
+# return 28;
+    movl  $28, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end30:
+# a = (b >= float(a));
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    fildl  (%esp)
+    addl   $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    setae %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jz    if_end31
+# {
+    subl  $8, %esp
+# return 29;
+    movl  $29, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end31:
+# a = (b < float(a));
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    fildl  (%esp)
+    addl   $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    setb  %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if !a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test   %eax, %eax
+    setz   %al
+    movzbl %al, %eax
+    test  %eax, %eax
+    jz    if_end32
+# {
+    subl  $8, %esp
+# return 30;
+    movl  $30, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end32:
+# a = (b > float(a));
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    pushl %eax
+    fildl  (%esp)
+    addl   $4, %esp
+    lea   -8(%ebp), %eax
+    flds  (%eax)
+    fcomip
+    fstp %st(0)
+    seta  %al
+    movzbl %al, %eax
+    pushl %eax
+    lea   -4(%ebp), %eax
+    popl  %ecx
+    movl  %ecx, (%eax)
+# if a
+    lea   -4(%ebp), %eax
+    movl  (%eax), %eax
+    test  %eax, %eax
+    jz    if_end33
+# {
+    subl  $8, %esp
+# return 31;
+    movl  $31, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+if_end33:
+# return 0;
+    movl  $0, %eax
+    movl  %ebp, %esp
+    popl  %ebp
+    ret
+# }
+

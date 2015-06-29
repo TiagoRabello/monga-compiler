@@ -1,56 +1,112 @@
-<TK_INT_T> <TK_ID>[main]()
+<TK_INT_T> <TK_ID>[monga_main]()
 {
   <TK_INT_T> <TK_ID>[a];
   <TK_FLOAT_T> <TK_ID>[b];
   <TK_ID>[a] = <TK_INT_LITERAL>[1];
-  <TK_ID>[b] = <TK_FLOAT_LITERAL>[1.0];
 
   <TK_COMMENT>[/* Integer operations */]
   <TK_ID>[a] = -<TK_ID>[a];
+  <TK_IF> (!(<TK_ID>[a] <TK_EQ> -<TK_INT_LITERAL>[1])) { <TK_RETURN> <TK_INT_LITERAL>[1]; }
 
   <TK_ID>[a] = <TK_ID>[a] + <TK_INT_LITERAL>[1];
+  <TK_IF> (!(<TK_ID>[a] <TK_EQ> <TK_INT_LITERAL>[0])) { <TK_RETURN> <TK_INT_LITERAL>[2]; }
+
   <TK_ID>[a] = <TK_ID>[a] - <TK_INT_LITERAL>[1];
+  <TK_IF> (!(<TK_ID>[a] <TK_EQ> -<TK_INT_LITERAL>[1])) { <TK_RETURN> <TK_INT_LITERAL>[3]; }
+
   <TK_ID>[a] = <TK_ID>[a] * <TK_INT_LITERAL>[1];
+  <TK_IF> (!(<TK_ID>[a] <TK_EQ> -<TK_INT_LITERAL>[1])) { <TK_RETURN> <TK_INT_LITERAL>[4]; }
+
   <TK_ID>[a] = <TK_ID>[a] / <TK_INT_LITERAL>[1];
+  <TK_IF> (!(<TK_ID>[a] <TK_EQ> -<TK_INT_LITERAL>[1])) { <TK_RETURN> <TK_INT_LITERAL>[5]; }
+
 
   <TK_ID>[a] = <TK_ID>[a] <TK_EQ> <TK_ID>[a];
+  <TK_IF> (!<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[6]; }
+
   <TK_ID>[a] = <TK_ID>[a] <TK_LEQ> <TK_ID>[a];
+  <TK_IF> (!(<TK_ID>[a])) { <TK_RETURN> <TK_INT_LITERAL>[7]; }
+
   <TK_ID>[a] = <TK_ID>[a] <TK_GEQ> <TK_ID>[a];
+  <TK_IF> (!(<TK_ID>[a])) { <TK_RETURN> <TK_INT_LITERAL>[8]; }
+
   <TK_ID>[a] = <TK_ID>[a] < <TK_ID>[a];
+  <TK_IF> (<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[9]; }
+
   <TK_ID>[a] = <TK_ID>[a] > <TK_ID>[a];
+  <TK_IF> (<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[10]; }
 
   <TK_ID>[a] = !<TK_ID>[a];
+  <TK_IF> (!<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[11]; }
 
   <TK_ID>[a] = <TK_ID>[a] <TK_AND> <TK_ID>[a];
+  <TK_IF> (!<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[12]; }
+
   <TK_ID>[a] = <TK_ID>[a] <TK_OR> <TK_ID>[a];
+  <TK_IF> (!<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[13]; }
 
   <TK_COMMENT>[/* Floating point operations */]
+  <TK_ID>[b] = <TK_FLOAT_LITERAL>[1.0];
   <TK_ID>[b] = -<TK_ID>[b];
+  <TK_IF> (!(<TK_ID>[b] <TK_EQ> -<TK_FLOAT_LITERAL>[1.0])) { <TK_RETURN> <TK_INT_LITERAL>[14]; }
 
   <TK_ID>[b] = <TK_ID>[b] + <TK_FLOAT_LITERAL>[1.0];
+  <TK_IF> (!(<TK_ID>[b] <TK_EQ> <TK_FLOAT_LITERAL>[0.0])) { <TK_RETURN> <TK_INT_LITERAL>[15]; }
+
   <TK_ID>[b] = <TK_ID>[b] - <TK_FLOAT_LITERAL>[1.0];
+  <TK_IF> (!(<TK_ID>[b] <TK_EQ> -<TK_FLOAT_LITERAL>[1.0])) { <TK_RETURN> <TK_INT_LITERAL>[16]; }
+
   <TK_ID>[b] = <TK_ID>[b] * <TK_FLOAT_LITERAL>[1.0];
+  <TK_IF> (!(<TK_ID>[b] <TK_EQ> -<TK_FLOAT_LITERAL>[1.0])) { <TK_RETURN> <TK_INT_LITERAL>[17]; }
+
   <TK_ID>[b] = <TK_ID>[b] / <TK_FLOAT_LITERAL>[1.0];
+  <TK_IF> (!(<TK_ID>[b] <TK_EQ> -<TK_FLOAT_LITERAL>[1.0])) { <TK_RETURN> <TK_INT_LITERAL>[18]; }
 
   <TK_ID>[a] = <TK_ID>[b] <TK_EQ> <TK_ID>[b];
+  <TK_IF> (!<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[19]; }
+
   <TK_ID>[a] = <TK_ID>[b] <TK_LEQ> <TK_ID>[b];
+  <TK_IF> (!<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[20]; }
+
   <TK_ID>[a] = <TK_ID>[b] <TK_GEQ> <TK_ID>[b];
+  <TK_IF> (!<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[21]; }
+
   <TK_ID>[a] = <TK_ID>[b] < <TK_ID>[b];
+  <TK_IF> (<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[22]; }
+
   <TK_ID>[a] = <TK_ID>[b] > <TK_ID>[b];
+  <TK_IF> (<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[23]; }
 
   <TK_COMMENT>[/* Mixed operations */]
-  <TK_ID>[b] = -<TK_ID>[b];
+  <TK_ID>[a] = <TK_INT_LITERAL>[1];
+  <TK_ID>[b] = -<TK_FLOAT_LITERAL>[1.0];
 
   <TK_ID>[b] = <TK_ID>[b] + <TK_ID>[a];
+  <TK_IF> (!(<TK_ID>[b] <TK_EQ> <TK_FLOAT_LITERAL>[0.0])) { <TK_RETURN> <TK_INT_LITERAL>[24]; }
+
   <TK_ID>[b] = <TK_ID>[b] - <TK_ID>[a];
+  <TK_IF> (!(<TK_ID>[b] <TK_EQ> -<TK_FLOAT_LITERAL>[1.0])) { <TK_RETURN> <TK_INT_LITERAL>[25]; }
+
   <TK_ID>[b] = <TK_ID>[b] * <TK_ID>[a];
+  <TK_IF> (!(<TK_ID>[b] <TK_EQ> -<TK_FLOAT_LITERAL>[1.0])) { <TK_RETURN> <TK_INT_LITERAL>[26]; }
+
   <TK_ID>[b] = <TK_ID>[b] / <TK_ID>[a];
+  <TK_IF> (!(<TK_ID>[b] <TK_EQ> -<TK_FLOAT_LITERAL>[1.0])) { <TK_RETURN> <TK_INT_LITERAL>[26]; }
 
   <TK_ID>[a] = <TK_ID>[b] <TK_EQ> <TK_ID>[a];
-  <TK_ID>[a] = <TK_ID>[b] <TK_LEQ> <TK_ID>[a];
-  <TK_ID>[a] = <TK_ID>[b] <TK_GEQ> <TK_ID>[a];
-  <TK_ID>[a] = <TK_ID>[b] < <TK_ID>[a];
-  <TK_ID>[a] = <TK_ID>[b] > <TK_ID>[a];
+  <TK_IF> (<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[27]; }
 
-  <TK_RETURN> <TK_ID>[a];
+  <TK_ID>[a] = <TK_ID>[b] <TK_LEQ> <TK_ID>[a];
+  <TK_IF> (!<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[28]; }
+
+  <TK_ID>[a] = <TK_ID>[b] <TK_GEQ> <TK_ID>[a];
+  <TK_IF> (<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[29]; }
+
+  <TK_ID>[a] = <TK_ID>[b] < <TK_ID>[a];
+  <TK_IF> (!<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[30]; }
+
+  <TK_ID>[a] = <TK_ID>[b] > <TK_ID>[a];
+  <TK_IF> (<TK_ID>[a]) { <TK_RETURN> <TK_INT_LITERAL>[31]; }
+
+  <TK_RETURN> <TK_INT_LITERAL>[0];
 }
