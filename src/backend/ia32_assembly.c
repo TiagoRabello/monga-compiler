@@ -122,6 +122,7 @@ static void gen_ia32_block    (FILE *output, ast_statement_block_node   *node, i
 
 static int  gen_ia32_func_call_params(FILE *output, exp_list_node *node);
 static void gen_ia32_return_noexp    (FILE *output);
+static void gen_ia32_push_float_top  (FILE *output);
 static void gen_ia32_push_eax        (FILE *output);
 static void gen_ia32_pop_reg         (FILE *output, const char *reg);
 static void gen_ia32_if_true_goto    (FILE *output, const char *fail_label);
@@ -134,7 +135,14 @@ static int gen_ia32_func_call_params(FILE *output, exp_list_node *node)
 
   const int num_params = gen_ia32_func_call_params(output, node->next);
   gen_ia32_exp(output, node->exp);
-  gen_ia32_push_eax(output);
+  if (node->exp->type.type == ast_float_type && node->exp->type.dimensions == 0)
+  {
+    gen_ia32_push_float_top(output);
+  }
+  else
+  {
+    gen_ia32_push_eax(output);
+  }
 
   return num_params + 1;
 }
@@ -149,6 +157,12 @@ static void gen_ia32_return_noexp(FILE *output)
 static void gen_ia32_push_eax(FILE *output)
 {
   fprintf(output, "    pushl %%eax\n");
+}
+
+static void gen_ia32_push_float_top(FILE *output)
+{
+  fprintf(output, "    subl   $4, %%esp\n"
+                  "    fstps (%%esp)\n");
 }
 
 static void gen_ia32_pop_reg(FILE *output, const char *reg)
@@ -291,7 +305,7 @@ static void gen_ia32_exp(FILE *output, ast_exp_node *node)
       gen_ia32_exp(output, node->value.operator_new.exp);
       fprintf(output, "    shl   $%d, %%eax\n", size_of_basic_power2(node->value.operator_new.type.type));
       gen_ia32_push_eax(output);
-      fprintf(output, "    call  malloc\n"
+      fprintf(output, "    call  _malloc\n"
                       "    addl  $4, %%esp\n");
       break;
     case type_cast_tag:
