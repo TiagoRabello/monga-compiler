@@ -26,6 +26,7 @@ static void gen_unique_label      (char *label, const char *prefix);
 static int  calc_offset_local_vars(ast_decl_node *node, int initial_offset);
 static int  size_of               (ast_basic_type type);
 static int  size_of_power2        (ast_basic_type type);
+static ast_basic_type get_var_basic_type(ast_var_node *node);
 
 static void gen_unique_label(char *label, const char *prefix)
 {
@@ -55,6 +56,21 @@ static int size_of_power2(ast_basic_type type)
   return 2;
 }
 
+static ast_basic_type get_var_basic_type(ast_var_node *node)
+{
+  switch (node->tag)
+  {
+    case indexed:
+      return node->value.indexed.base->type.type;
+
+    case non_indexed:
+      return node->value.non_indexed.value.decl->value.decl_var.type.type;
+  }
+
+  assert(FALSE);
+  return ast_void_type;
+}
+
 static void gen_ia32_decl     (FILE *output, ast_decl_node      *node);
 static void gen_ia32_decl_var (FILE *output, ast_decl_var_node  *node);
 static void gen_ia32_decl_func(FILE *output, ast_decl_func_node *node);
@@ -76,6 +92,9 @@ static int  gen_ia32_func_call_params(FILE *output, exp_list_node *node);
 static void gen_ia32_return_noexp    (FILE *output);
 static void gen_ia32_push_eax        (FILE *output);
 static void gen_ia32_pop_reg         (FILE *output, const char *reg);
+static void gen_ia32_if_true_goto    (FILE *output, const char *fail_label);
+static void gen_ia32_if_false_goto   (FILE *output, const char *fail_label);
+static void gen_ia32_label           (FILE *output, const char *label);
 
 static int gen_ia32_func_call_params(FILE *output, exp_list_node *node)
 {
@@ -103,6 +122,23 @@ static void gen_ia32_push_eax(FILE *output)
 static void gen_ia32_pop_reg(FILE *output, const char *reg)
 {
   fprintf(output, "    popl  %%%s\n", reg);
+}
+
+static void gen_ia32_if_true_goto(FILE *output, const char *label)
+{
+  fprintf(output, "    test  %%eax, %%eax\n"
+                  "    jnz   %s\n", label);
+}
+
+static void gen_ia32_if_false_goto(FILE *output, const char *label)
+{
+  fprintf(output, "    test  %%eax, %%eax\n"
+                  "    jz    %s\n", label);
+}
+
+static void gen_ia32_label(FILE *output, const char *label)
+{
+  fprintf(output, "%s:\n", label);
 }
 
 void gen_ia32(FILE *output, ast_program_node *ast)
@@ -140,8 +176,11 @@ static void gen_ia32_decl_func(FILE *output, ast_decl_func_node *node)
   int offset = 8;
   ast_decl_node *param;
 
+  fprintf(output, "# ");
+  print_ast_decl_func_signature(output, node, 0);
+
   fprintf(output, ".globl %s\n", node->name);
-  fprintf(output, "%s:\n", node->name);
+  gen_ia32_label(output, node->name);
   fprintf(output, "    pushl %%ebp\n"
                   "    movl  %%esp, %%ebp\n");
 
@@ -171,7 +210,7 @@ static void gen_ia32_exp(FILE *output, ast_exp_node *node)
       break;
     case float_literal_tag:
       {
-        fprintf(output, "    pushl $0x%x\n", *(unsigned int*)&(node->value.float_literal));
+        fprintf(output, "    pushl $0x%08x\n", *(unsigned int*)&(node->value.float_literal));
         fprintf(output, "    flds  (%%esp)\n");
         fprintf(output, "    addl  $4, %%esp\n"); 
       }
@@ -184,7 +223,21 @@ static void gen_ia32_exp(FILE *output, ast_exp_node *node)
       break;
     case var_tag:
       gen_ia32_var(output, &(node->value.var));
-      fprintf(output, "    movl  (%%eax), %%eax\n");
+      switch (node->type.type)
+      {
+        case ast_int_type:
+          fprintf(output, "    movl  (%%eax), %%eax\n");
+          break;
+        case ast_char_type:
+          fprintf(output, "    movb  (%%eax), %%al\n");
+          break;
+        case ast_float_type:
+          fprintf(output, "    flds  (%%eax)\n");
+          break;
+        case ast_void_type:
+          assert(FALSE);
+          break;
+      }
       break;
     case func_call_tag:
       gen_ia32_func_call(output, &(node->value.func_call));
@@ -197,20 +250,17 @@ static void gen_ia32_exp(FILE *output, ast_exp_node *node)
       fprintf(output, "    addl  $4, %%esp\n");
       break;
     case type_cast_tag:
-      /* TODO */
+      gen_ia32_exp(output, node->value.type_cast.exp);
       switch (node->value.type_cast.type.type)
       {
         case ast_int_type:
           switch (node->value.type_cast.exp->type.type)
           {
-            case ast_int_type:
-              /* NO OP */
-              break;
             case ast_char_type:
               fprintf(output, "    movzbl %%al, %%eax\n");
               break;
+            case ast_int_type:
             case ast_float_type:
-              break;
             case ast_void_type:
               assert(FALSE);
               break;
@@ -234,8 +284,14 @@ static void gen_ia32_exp(FILE *output, ast_exp_node *node)
           switch (node->value.type_cast.exp->type.type)
           {
             case ast_int_type:
+              gen_ia32_push_eax(output);
+              fprintf(output, "    fildl  (%%esp)\n");
+              fprintf(output, "    addl   $4, %%esp\n");
               break;
             case ast_char_type:
+              gen_ia32_push_eax(output);
+              fprintf(output, "    fildb  (%%esp)\n");
+              fprintf(output, "    addl   $4, %%esp\n");
               break;
             case ast_float_type:
               /* NO OP */
@@ -270,7 +326,7 @@ static void gen_ia32_var(FILE *output, ast_var_node *node)
       gen_ia32_push_eax(output);
       gen_ia32_exp(output, node->value.indexed.base);
       fprintf(output, "    popl  %%ecx\n");
-      fprintf(output, "    lea   (%%eax, %%ecx, 4), %%eax\n");
+      fprintf(output, "    lea   (%%eax, %%ecx, %d), %%eax\n", size_of(get_var_basic_type(node)));
       break;
     case non_indexed:
       fprintf(output, "    lea   %d(%%ebp), %%eax\n", 
@@ -281,75 +337,146 @@ static void gen_ia32_var(FILE *output, ast_var_node *node)
 
 static void gen_ia32_binop(FILE *output, ast_exp_binop_node *node)
 {
-  /* Avalia na ordem inversa para facilitar algumas operacoes, como subtracao */
-  gen_ia32_exp(output, node->exp2);
-  gen_ia32_push_eax(output);
-  gen_ia32_exp(output, node->exp1);
-  gen_ia32_pop_reg(output, "ecx");
-
   if (node->tag == equal_tag ||
       node->tag == less_equal_tag ||
       node->tag == greater_equal_tag ||
       node->tag == greater_tag ||
       node->tag == less_tag)
   {
-    fprintf(output, "    cmp   %%ecx, %%eax\n");
-    switch (node->tag)
+    gen_ia32_exp(output, node->exp2);
+    if (node->exp2->type.type != ast_float_type) { gen_ia32_push_eax(output); }
+    gen_ia32_exp(output, node->exp1);
+    if (node->exp2->type.type != ast_float_type) { gen_ia32_pop_reg(output, "ecx"); }
+
+    if (node->exp1->type.type != ast_float_type)
     {
-      case equal_tag:
-        fprintf(output, "    sete  %%al\n");
-        break;
-      case less_equal_tag:
-        fprintf(output, "    setle %%al\n");
-        break;
-      case greater_equal_tag:
-        fprintf(output, "    setge %%al\n");
-        break;
-      case greater_tag:
-        fprintf(output, "    setg  %%al\n");
-        break;
-      case less_tag:
-        fprintf(output, "    setl  %%al\n");
-        break;
+      fprintf(output, "    cmpl  %%ecx, %%eax\n");
+      switch (node->tag)
+      {
+        case equal_tag:
+          fprintf(output, "    sete  %%al\n");
+          break;
+        case less_equal_tag:
+          fprintf(output, "    setle %%al\n");
+          break;
+        case greater_equal_tag:
+          fprintf(output, "    setge %%al\n");
+          break;
+        case greater_tag:
+          fprintf(output, "    setg  %%al\n");
+          break;
+        case less_tag:
+          fprintf(output, "    setl  %%al\n");
+          break;
+      }
+    }
+    else
+    { 
+      fprintf(output, "    fcomip\n"
+                      "    fstp %%st(0)\n");
+      switch (node->tag)
+      {
+        case equal_tag:
+          fprintf(output, "    sete  %%al\n");
+          break;
+        case less_equal_tag:
+          fprintf(output, "    setbe %%al\n");
+          break;
+        case greater_equal_tag:
+          fprintf(output, "    setae %%al\n");
+          break;
+        case greater_tag:
+          fprintf(output, "    seta  %%al\n");
+          break;
+        case less_tag:
+          fprintf(output, "    setb  %%al\n");
+          break;
+      }
     }
     fprintf(output, "    movzbl %%al, %%eax\n");
   }
   else if (node->tag == logical_and_tag ||
            node->tag == logical_or_tag)
   {
-    const char *cmd = NULL;
-    switch (node->tag)
+    char fail_label[512];
+    if (node->tag == logical_and_tag)
     {
-      /* TODO: Short Circuit and FIX */
-      case logical_and_tag:
-        cmd = "andl ";
-        break;
-      case logical_or_tag:
-        cmd = "orl  ";
-        break;
+      gen_unique_label(fail_label, "and_short_circuit");
     }
-    fprintf(output, "    %s %%ecx, %%eax\n", cmd);
+    else
+    {
+      gen_unique_label(fail_label, "or_short_circuit");
+    }
+    
+    gen_ia32_exp(output, node->exp1);
+    if (node->tag == logical_and_tag)
+    {
+      gen_ia32_if_false_goto(output, fail_label);
+    }
+    else
+    {
+      gen_ia32_if_true_goto(output, fail_label); 
+    }
+    
+    gen_ia32_exp(output, node->exp2);
+    if (node->tag == logical_and_tag)
+    {
+      gen_ia32_if_false_goto(output, fail_label);
+    }
+    else
+    {
+      gen_ia32_if_true_goto(output, fail_label); 
+    }
+
+    gen_ia32_label(output, fail_label);
   }
   else
   {
-    const char *cmd = NULL;
-    switch (node->tag)
-    {
-      case add_tag:
-        cmd = "addl ";
-        break;
-      case subtract_tag:
-        cmd = "subl ";
-        break;
-      case multiply_tag:
-        cmd = "imull";
-        break;
+    gen_ia32_exp(output, node->exp2);
+    if (node->exp2->type.type != ast_float_type) { gen_ia32_push_eax(output); }
+    gen_ia32_exp(output, node->exp1);
+    if (node->exp2->type.type != ast_float_type) { gen_ia32_pop_reg(output, "ecx"); }
 
-      case divide_tag:
-        fprintf(output, "    idivl %%ecx\n", cmd);
-        return;
+    if (node->exp2->type.type != ast_float_type)
+    {
+      const char *cmd = NULL;
+      switch (node->tag)
+      {
+        case add_tag:
+          cmd = "addl ";
+          break;
+        case subtract_tag:
+          cmd = "subl ";
+          break;
+        case multiply_tag:
+          cmd = "imull";
+          break;
+
+        case divide_tag:
+          fprintf(output, "    cdq\n");
+          fprintf(output, "    idivl %%ecx\n");
+          return;
+      }
+      fprintf(output, "    %s %%ecx, %%eax #\n", cmd);
     }
-    fprintf(output, "    %s %%ecx, %%eax\n", cmd);
+    else
+    {
+      switch (node->tag)
+      {
+        case add_tag:
+          fprintf(output, "    faddp\n");
+          break;
+        case subtract_tag:
+          fprintf(output, "    fsubp\n");
+          break;
+        case multiply_tag:
+          fprintf(output, "    fmulp\n");
+          break;
+        case divide_tag:
+          fprintf(output, "    fdivp\n");
+          return;
+      }
+    }
   }
 }
 
@@ -360,10 +487,27 @@ static void gen_ia32_unop(FILE *output, ast_exp_unop_node *node)
   switch (node->tag)
   {
     case minus_tag:
-      fprintf(output, "    negl  %%eax\n");
+      switch (node->exp->type.type)
+      {
+        case ast_int_type:
+          fprintf(output, "    negl  %%eax\n");
+          break;
+        case ast_char_type:
+          fprintf(output, "    negb  %%al\n");
+          break;
+        case ast_float_type:
+          fprintf(output, "    fchs\n");
+          break;
+        case ast_void_type:
+          assert(FALSE);
+          break;
+      }
       break;
     case logical_not_tag:
-      fprintf(output, "    notl  %%eax\n");
+      assert(node->exp->type.type == ast_int_type);
+      fprintf(output, "    test   %%eax, %%eax\n"
+                      "    setz   %%al\n"
+                      "    movzbl %%al, %%eax\n");
       break;
   }
 }
@@ -373,10 +517,13 @@ static void gen_ia32_if_else(FILE *output, ast_statement_if_else_node *node, int
   char else_end_label[512];
   char test_fail_label[512];
   gen_unique_label(test_fail_label, "if_end");
+  
+  fprintf(output, "# if ");
+  print_ast_exp_node(output, node->exp);
+  fprintf(output, "\n");
 
   gen_ia32_exp(output, node->exp);
-  fprintf(output, "    test  %%eax, %%eax\n");
-  fprintf(output, "    jz    %s\n", test_fail_label);
+  gen_ia32_if_false_goto(output, test_fail_label);
 
   gen_ia32_statement(output, node->if_body, initial_offset);
 
@@ -384,14 +531,17 @@ static void gen_ia32_if_else(FILE *output, ast_statement_if_else_node *node, int
   {
     gen_unique_label(else_end_label, "else_end");
     fprintf(output, "    jmp   %s\n", else_end_label);
+
+  
+    fprintf(output, "# else\n");
   }
 
-  fprintf(output, "%s:\n", test_fail_label);
+  gen_ia32_label(output, test_fail_label);
 
   if (node->else_body)
   {
     gen_ia32_statement(output, node->else_body, initial_offset);
-    fprintf(output, "%s:\n", else_end_label);
+    gen_ia32_label(output, else_end_label);
   }
 }
 
@@ -403,28 +553,55 @@ static void gen_ia32_while(FILE *output, ast_statement_while_node *node, int ini
   gen_unique_label(while_begin_label, "while_begin");
   gen_unique_label(while_end_label, "while_end");
 
-  fprintf(output, "%s:\n", while_begin_label);
+  gen_ia32_label(output, while_begin_label);
+
+  fprintf(output, "# while ");
+  print_ast_exp_node(output, node->exp);
+  fprintf(output, "\n");
+
   gen_ia32_exp(output, node->exp);
-  fprintf(output, "    test  %%eax, %%eax\n");
-  fprintf(output, "    jz    %s\n", while_end_label);
+  gen_ia32_if_false_goto(output, while_end_label);
+
   gen_ia32_statement(output, node->statement, initial_offset);
+
   fprintf(output, "    jmp   %s\n", while_begin_label);
-  fprintf(output, "%s:\n", while_end_label);
+  gen_ia32_label(output, while_end_label);
 }
 
 static void gen_ia32_assign(FILE *output, ast_statement_assign_node *node)
 {
   fprintf(output, "# ");
   print_ast_statement_assign_node(output, node, 0);
-  gen_ia32_var(output, &(node->var));
-  gen_ia32_push_eax(output);
+
+  ast_basic_type basic_type = get_var_basic_type(&(node->var));
+
   gen_ia32_exp(output, node->exp);
-  gen_ia32_pop_reg(output, "ecx");
-  fprintf(output, "    movl  %%eax, (%%ecx)\n");
+  if (basic_type != ast_float_type) { gen_ia32_push_eax(output); }
+  gen_ia32_var(output, &(node->var));
+  if (basic_type != ast_float_type) { gen_ia32_pop_reg(output, "ecx"); }
+
+  switch (basic_type)
+  {
+    case ast_int_type:
+      fprintf(output, "    movl  %%ecx, (%%eax)\n");
+      break;
+    case ast_char_type:
+      fprintf(output, "    movb  %%cl, (%%eax)\n");
+      break;
+    case ast_float_type:
+      fprintf(output, "    fstps (%%eax)\n");
+      break;
+    case ast_void_type:
+      assert(FALSE);
+      break;
+  }
 }
 
 static void gen_ia32_return(FILE *output, ast_statement_return_node *node)
 {
+  fprintf(output, "# ");
+  print_ast_statement_return_node(output, node, 0);
+
   if (node->exp)
   {
     gen_ia32_exp(output, node->exp);
@@ -435,6 +612,8 @@ static void gen_ia32_return(FILE *output, ast_statement_return_node *node)
 
 static void gen_ia32_block(FILE *output, ast_statement_block_node *node, int initial_offset)
 {
+  fprintf(output, "# {\n");
+
   int var_space = calc_offset_local_vars(node->decl_vars, initial_offset);
   if (var_space > 0)
   {
@@ -451,6 +630,8 @@ static void gen_ia32_block(FILE *output, ast_statement_block_node *node, int ini
   {
     fprintf(output, "    addl  $%d, %%esp\n", var_space); 
   }
+
+  fprintf(output, "# }\n");
 }
 
 static void gen_ia32_statement(FILE *output, ast_statement_node *node, int initial_offset)
