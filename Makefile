@@ -79,6 +79,11 @@ PRINT_RESULT_MSG=/usr/bin/test "$$?" -eq 0 && echo -e $(SUCCESS_MSG) || echo -e 
 ###############################################################################
 test: test_scanner test_parser test_semantic test_backend
 
+# Compile a monga file.
+# Usage: make compile src=source.monga
+compile: $(BIN_DIR)/compiler
+	@$^ < $(src) > out.s && $(CC) -m32 -c out.s -o out.o && $(CC) -m32 src/runtime/main.c out.o -o out.exe
+
 # Run every backend test.
 test_backend: backend_test
 	@echo "Starting backend tests:"
@@ -169,6 +174,8 @@ backend_test: $(BIN_DIR)/monga_scanner.o \
               $(BIN_DIR)/backend_test_main.o
 	$(CC) -o $(BIN_DIR)/$@ $^
 
+# Compiler related files.
+
 compiler: $(BIN_DIR)/monga_scanner.o \
           $(BIN_DIR)/monga_parser.o \
           $(BIN_DIR)/ast_printer.o \
@@ -177,10 +184,6 @@ compiler: $(BIN_DIR)/monga_scanner.o \
           $(BIN_DIR)/ia32_assembly.o \
           $(BIN_DIR)/compiler_main.o
 	$(CC) -o $(BIN_DIR)/$@ $^
-
-# Compiler related files.
-compile: $(BIN_DIR)/compiler
-	@$^ < $(src) > out.s && $(CC) -c out.s -o out.o && $(CC) src/runtime/main.c out.o -o out.exe
 
 $(BIN_DIR)/compiler: compiler
 
