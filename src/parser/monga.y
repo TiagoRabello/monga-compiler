@@ -15,7 +15,7 @@ ast_program_node *ast;
 %}
 
 %union {
-  double              float_val;
+  float               float_val;
   int                 int_val;
   char               *string_val;
   char                char_val;

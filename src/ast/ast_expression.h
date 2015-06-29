@@ -75,7 +75,7 @@ struct _ast_exp_node
   ast_exp_tag tag;
   union
   {
-    double                    float_literal;
+    float                     float_literal;
     int                       int_literal;
     const char*               string_literal;
     ast_exp_binop_node        binop_node;
