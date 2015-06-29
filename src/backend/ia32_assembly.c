@@ -22,11 +22,15 @@
 #define MAX(A,B) (((A) > (B)) ? (A) : (B))
 #endif
 
-static void gen_unique_label      (char *label, const char *prefix);
-static int  calc_offset_local_vars(ast_decl_node *node, int initial_offset);
-static int  size_of               (ast_basic_type type);
-static int  size_of_power2        (ast_basic_type type);
-static ast_basic_type get_var_basic_type(ast_var_node *node);
+#define GLOBAL_OFFSET 0
+
+static void gen_unique_label             (char *label, const char *prefix);
+static int  calc_offset_local_vars       (ast_decl_node *node, int initial_offset);
+static int  size_of                      (ast_type type);
+static int  size_of_basic                (ast_basic_type type);
+static int  size_of_basic_power2         (ast_basic_type type);
+static ast_basic_type get_var_basic_type (ast_var_node *node);
+static ast_basic_type get_var_assign_type(ast_var_node *node);
 
 static void gen_unique_label(char *label, const char *prefix)
 {
@@ -44,13 +48,19 @@ static int calc_offset_local_vars(ast_decl_node *node, int initial_offset)
   return initial_offset;
 }
 
-static int size_of(ast_basic_type type)
+static int size_of(ast_type type)
+{
+  if (type.dimensions > 0) { return 4; }
+  return size_of_basic(type.type);
+}
+
+static int size_of_basic(ast_basic_type type)
 {
   if (type == ast_char_type) { return 1; }
   return 4;
 }
 
-static int size_of_power2(ast_basic_type type)
+static int size_of_basic_power2(ast_basic_type type)
 {
   if (type == ast_char_type) { return 0; }
   return 2;
@@ -71,9 +81,31 @@ static ast_basic_type get_var_basic_type(ast_var_node *node)
   return ast_void_type;
 }
 
-static void gen_ia32_decl     (FILE *output, ast_decl_node      *node);
-static void gen_ia32_decl_var (FILE *output, ast_decl_var_node  *node);
-static void gen_ia32_decl_func(FILE *output, ast_decl_func_node *node);
+static ast_basic_type get_var_assign_type(ast_var_node *node)
+{
+  switch (node->tag)
+  {
+    case indexed:
+      return node->value.indexed.base->type.type;
+
+    case non_indexed:
+      if (node->value.non_indexed.value.decl->value.decl_var.type.dimensions == 0)
+      {
+        return node->value.non_indexed.value.decl->value.decl_var.type.type;
+      }
+      else
+      {
+        return ast_int_type;
+      }
+  }
+
+  assert(FALSE);
+  return ast_void_type;
+}
+
+static void gen_ia32_decl_global    (FILE *output, ast_decl_node      *node);
+static void gen_ia32_decl_global_var(FILE *output, ast_decl_var_node  *node);
+static void gen_ia32_decl_func      (FILE *output, ast_decl_func_node *node);
 
 static void gen_ia32_exp      (FILE *output, ast_exp_node       *node);
 static void gen_ia32_func_call(FILE *output, ast_func_call_node *node);
@@ -149,17 +181,17 @@ void gen_ia32(FILE *output, ast_program_node *ast)
   ast_decl_node *node = ast;
   for (; node; node = node->next)
   {
-    gen_ia32_decl(output, node);
+    gen_ia32_decl_global(output, node);
     fprintf(output, "\n");
   }
 }
 
-static void gen_ia32_decl(FILE *output, ast_decl_node *node)
+static void gen_ia32_decl_global(FILE *output, ast_decl_node *node)
 {
   switch (node->tag)
   {
     case decl_var_tag:
-      gen_ia32_decl_var(output, &(node->value.decl_var));
+      gen_ia32_decl_global_var(output, &(node->value.decl_var));
       break;
     case decl_func_tag:
       gen_ia32_decl_func(output, &(node->value.decl_func));
@@ -167,8 +199,11 @@ static void gen_ia32_decl(FILE *output, ast_decl_node *node)
   }
 }
 
-static void gen_ia32_decl_var(FILE *output, ast_decl_var_node *node)
+static void gen_ia32_decl_global_var(FILE *output, ast_decl_var_node *node)
 {
+  fprintf(output, ".data\n"
+                  "    %s: .zero %d\n"
+                  ".text\n", node->name, size_of(node->type));
 }
 
 static void gen_ia32_decl_func(FILE *output, ast_decl_func_node *node)
@@ -210,16 +245,26 @@ static void gen_ia32_exp(FILE *output, ast_exp_node *node)
       break;
     case float_literal_tag:
       {
-        fprintf(output, "    pushl $0x%08x\n", *(unsigned int*)&(node->value.float_literal));
-        fprintf(output, "    flds  (%%esp)\n");
-        fprintf(output, "    addl  $4, %%esp\n"); 
+        fprintf(output, "    pushl $0x%08x\n"
+                        "    flds  (%%esp)\n"
+                        "    addl  $4, %%esp\n"
+                        , *(unsigned int*)&(node->value.float_literal));
       }
       break;
     case int_literal_tag:
       fprintf(output, "    movl  $%d, %%eax\n", node->value.int_literal);
       break;
     case string_literal_tag:
-      /* TODO */
+      {
+        char string_symbol[64];
+        gen_unique_label(string_symbol, "string_literal");
+
+        fprintf(output, ".data\n"
+                        "    %s: .string %s\n"
+                        ".text\n"
+                        "    movl  $%s, %%eax\n"
+                        , string_symbol, node->value.string_literal, string_symbol); 
+      }
       break;
     case var_tag:
       gen_ia32_var(output, &(node->value.var));
@@ -244,10 +289,10 @@ static void gen_ia32_exp(FILE *output, ast_exp_node *node)
       break;
     case operator_new_tag:
       gen_ia32_exp(output, node->value.operator_new.exp);
-      fprintf(output, "    shl   $%d, %%eax\n", size_of_power2(node->value.operator_new.type.type));
+      fprintf(output, "    shl   $%d, %%eax\n", size_of_basic_power2(node->value.operator_new.type.type));
       gen_ia32_push_eax(output);
-      fprintf(output, "    call  malloc\n");
-      fprintf(output, "    addl  $4, %%esp\n");
+      fprintf(output, "    call  malloc\n"
+                      "    addl  $4, %%esp\n");
       break;
     case type_cast_tag:
       gen_ia32_exp(output, node->value.type_cast.exp);
@@ -285,13 +330,13 @@ static void gen_ia32_exp(FILE *output, ast_exp_node *node)
           {
             case ast_int_type:
               gen_ia32_push_eax(output);
-              fprintf(output, "    fildl  (%%esp)\n");
-              fprintf(output, "    addl   $4, %%esp\n");
+              fprintf(output, "    fildl  (%%esp)\n"
+                              "    addl   $4, %%esp\n");
               break;
             case ast_char_type:
               gen_ia32_push_eax(output);
-              fprintf(output, "    fildb  (%%esp)\n");
-              fprintf(output, "    addl   $4, %%esp\n");
+              fprintf(output, "    fildb  (%%esp)\n"
+                              "    addl   $4, %%esp\n");
               break;
             case ast_float_type:
               /* NO OP */
@@ -313,8 +358,9 @@ static void gen_ia32_func_call(FILE *output, ast_func_call_node *node)
 {
   int num_params = gen_ia32_func_call_params(output, node->params);
 
-  fprintf(output, "    call  %s\n", node->value.decl->value.decl_func.name);
-  fprintf(output, "    addl  $%d, %%esp\n", num_params * 4);
+  const char *name = node->value.decl->value.decl_func.name;
+  fprintf(output, "    call  %s\n"
+                  "    addl  $%d, %%esp\n", name, num_params * 4);
 }
 
 static void gen_ia32_var(FILE *output, ast_var_node *node)
@@ -325,12 +371,23 @@ static void gen_ia32_var(FILE *output, ast_var_node *node)
       gen_ia32_exp(output, node->value.indexed.index);
       gen_ia32_push_eax(output);
       gen_ia32_exp(output, node->value.indexed.base);
-      fprintf(output, "    popl  %%ecx\n");
-      fprintf(output, "    lea   (%%eax, %%ecx, %d), %%eax\n", size_of(get_var_basic_type(node)));
+      fprintf(output, "    popl  %%ecx\n"
+                      "    lea   (%%eax, %%ecx, %d), %%eax\n"
+                      , size_of_basic(get_var_basic_type(node)));
       break;
     case non_indexed:
-      fprintf(output, "    lea   %d(%%ebp), %%eax\n", 
-              node->value.non_indexed.value.decl->value.decl_var.asm_offset);
+      {
+        int offset = node->value.non_indexed.value.decl->value.decl_var.asm_offset;
+        if (offset != GLOBAL_OFFSET)
+        {
+          fprintf(output, "    lea   %d(%%ebp), %%eax\n", offset);
+        }
+        else
+        {
+          const char *name = node->value.non_indexed.value.decl->value.decl_var.name;
+          fprintf(output, "    movl  $%s, %%eax\n", name);
+        }
+      }
       break;
   }
 }
@@ -573,7 +630,7 @@ static void gen_ia32_assign(FILE *output, ast_statement_assign_node *node)
   fprintf(output, "# ");
   print_ast_statement_assign_node(output, node, 0);
 
-  ast_basic_type basic_type = get_var_basic_type(&(node->var));
+  ast_basic_type basic_type = get_var_assign_type(&(node->var));
 
   gen_ia32_exp(output, node->exp);
   if (basic_type != ast_float_type) { gen_ia32_push_eax(output); }
