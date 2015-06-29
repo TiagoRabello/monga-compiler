@@ -1,0 +1,107 @@
+void swap_in_range(int[] vec, int pos1, int pos2)
+{
+  int temp;
+  temp      = vec[pos1];
+  vec[pos1] = vec[pos2];
+  vec[pos2] = temp;
+}
+
+void bubble_sort(int[] vec, int first, int last)
+{
+  while (last > (first + 1))
+  {
+    int i;
+    i = 1;
+    while (i < last)
+    {
+      if (vec[i] < vec[i - 1]) { swap_in_range(vec, i - 1, i); }
+      i = i + 1;
+    }
+    last = last - 1;
+  }
+}
+
+void quick_sort(int[] vec, int first, int last)
+{
+  int val;
+  int i;
+  int j;
+
+  if ((last - first) < 5)
+  {
+    bubble_sort(vec, first, last);
+    return;
+  }
+
+  val = vec[first];
+
+  i = first + 1;
+  j = last  - 1;
+
+  while (j > i)
+  {
+    while (i < j && vec[i] <= val) { i = i + 1; }
+    while (j > i && vec[j] >  val) { j = j - 1; }
+
+    if (j > i) { swap_in_range(vec, i, j); }
+  }
+
+  swap_in_range(vec, first, i - 1);
+  quick_sort(vec, first, i - 1);
+  quick_sort(vec, i, last);
+}
+
+int monga_main()
+{
+  int n;
+  int[] vec;
+
+  n = 10;
+  vec = new int[n];
+
+  vec[0] = 7;
+  vec[1] = 3;
+  vec[2] = 4;
+  vec[3] = 8;
+  vec[4] = 6;
+  vec[5] = 5;
+  vec[6] = 2;
+  vec[7] = 0;
+  vec[8] = 9;
+  vec[9] = 1;
+
+  bubble_sort(vec, 0, n);
+
+  while (n > 0)
+  {
+    if (!(vec[n - 1] == (n - 1)))
+    {
+      return -1;
+    }
+    n = n - 1;
+  }
+
+  vec[0] = 7;
+  vec[1] = 3;
+  vec[2] = 4;
+  vec[3] = 8;
+  vec[4] = 6;
+  vec[5] = 5;
+  vec[6] = 2;
+  vec[7] = 0;
+  vec[8] = 9;
+  vec[9] = 1;
+
+  quick_sort(vec, 0, n);
+
+  while (n > 0)
+  {
+    if (!(vec[n - 1] == (n - 1)))
+    {
+      return -2;
+    }
+    n = n - 1;
+  }
+
+  return 0;
+}

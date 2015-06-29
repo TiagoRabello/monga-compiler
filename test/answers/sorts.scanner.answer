@@ -1,0 +1,107 @@
+<TK_VOID_T> <TK_ID>[swap_in_range](<TK_INT_T>[] <TK_ID>[vec], <TK_INT_T> <TK_ID>[pos1], <TK_INT_T> <TK_ID>[pos2])
+{
+  <TK_INT_T> <TK_ID>[temp];
+  <TK_ID>[temp]      = <TK_ID>[vec][<TK_ID>[pos1]];
+  <TK_ID>[vec][<TK_ID>[pos1]] = <TK_ID>[vec][<TK_ID>[pos2]];
+  <TK_ID>[vec][<TK_ID>[pos2]] = <TK_ID>[temp];
+}
+
+<TK_VOID_T> <TK_ID>[bubble_sort](<TK_INT_T>[] <TK_ID>[vec], <TK_INT_T> <TK_ID>[first], <TK_INT_T> <TK_ID>[last])
+{
+  <TK_WHILE> (<TK_ID>[last] > (<TK_ID>[first] + <TK_INT_LITERAL>[1]))
+  {
+    <TK_INT_T> <TK_ID>[i];
+    <TK_ID>[i] = <TK_INT_LITERAL>[1];
+    <TK_WHILE> (<TK_ID>[i] < <TK_ID>[last])
+    {
+      <TK_IF> (<TK_ID>[vec][<TK_ID>[i]] < <TK_ID>[vec][<TK_ID>[i] - <TK_INT_LITERAL>[1]]) { <TK_ID>[swap_in_range](<TK_ID>[vec], <TK_ID>[i] - <TK_INT_LITERAL>[1], <TK_ID>[i]); }
+      <TK_ID>[i] = <TK_ID>[i] + <TK_INT_LITERAL>[1];
+    }
+    <TK_ID>[last] = <TK_ID>[last] - <TK_INT_LITERAL>[1];
+  }
+}
+
+<TK_VOID_T> <TK_ID>[quick_sort](<TK_INT_T>[] <TK_ID>[vec], <TK_INT_T> <TK_ID>[first], <TK_INT_T> <TK_ID>[last])
+{
+  <TK_INT_T> <TK_ID>[val];
+  <TK_INT_T> <TK_ID>[i];
+  <TK_INT_T> <TK_ID>[j];
+
+  <TK_IF> ((<TK_ID>[last] - <TK_ID>[first]) < <TK_INT_LITERAL>[5])
+  {
+    <TK_ID>[bubble_sort](<TK_ID>[vec], <TK_ID>[first], <TK_ID>[last]);
+    <TK_RETURN>;
+  }
+
+  <TK_ID>[val] = <TK_ID>[vec][<TK_ID>[first]];
+
+  <TK_ID>[i] = <TK_ID>[first] + <TK_INT_LITERAL>[1];
+  <TK_ID>[j] = <TK_ID>[last]  - <TK_INT_LITERAL>[1];
+
+  <TK_WHILE> (<TK_ID>[j] > <TK_ID>[i])
+  {
+    <TK_WHILE> (<TK_ID>[i] < <TK_ID>[j] <TK_AND> <TK_ID>[vec][<TK_ID>[i]] <TK_LEQ> <TK_ID>[val]) { <TK_ID>[i] = <TK_ID>[i] + <TK_INT_LITERAL>[1]; }
+    <TK_WHILE> (<TK_ID>[j] > <TK_ID>[i] <TK_AND> <TK_ID>[vec][<TK_ID>[j]] >  <TK_ID>[val]) { <TK_ID>[j] = <TK_ID>[j] - <TK_INT_LITERAL>[1]; }
+
+    <TK_IF> (<TK_ID>[j] > <TK_ID>[i]) { <TK_ID>[swap_in_range](<TK_ID>[vec], <TK_ID>[i], <TK_ID>[j]); }
+  }
+
+  <TK_ID>[swap_in_range](<TK_ID>[vec], <TK_ID>[first], <TK_ID>[i] - <TK_INT_LITERAL>[1]);
+  <TK_ID>[quick_sort](<TK_ID>[vec], <TK_ID>[first], <TK_ID>[i] - <TK_INT_LITERAL>[1]);
+  <TK_ID>[quick_sort](<TK_ID>[vec], <TK_ID>[i], <TK_ID>[last]);
+}
+
+<TK_INT_T> <TK_ID>[monga_main]()
+{
+  <TK_INT_T> <TK_ID>[n];
+  <TK_INT_T>[] <TK_ID>[vec];
+
+  <TK_ID>[n] = <TK_INT_LITERAL>[10];
+  <TK_ID>[vec] = <TK_NEW> <TK_INT_T>[<TK_ID>[n]];
+
+  <TK_ID>[vec][<TK_INT_LITERAL>[0]] = <TK_INT_LITERAL>[7];
+  <TK_ID>[vec][<TK_INT_LITERAL>[1]] = <TK_INT_LITERAL>[3];
+  <TK_ID>[vec][<TK_INT_LITERAL>[2]] = <TK_INT_LITERAL>[4];
+  <TK_ID>[vec][<TK_INT_LITERAL>[3]] = <TK_INT_LITERAL>[8];
+  <TK_ID>[vec][<TK_INT_LITERAL>[4]] = <TK_INT_LITERAL>[6];
+  <TK_ID>[vec][<TK_INT_LITERAL>[5]] = <TK_INT_LITERAL>[5];
+  <TK_ID>[vec][<TK_INT_LITERAL>[6]] = <TK_INT_LITERAL>[2];
+  <TK_ID>[vec][<TK_INT_LITERAL>[7]] = <TK_INT_LITERAL>[0];
+  <TK_ID>[vec][<TK_INT_LITERAL>[8]] = <TK_INT_LITERAL>[9];
+  <TK_ID>[vec][<TK_INT_LITERAL>[9]] = <TK_INT_LITERAL>[1];
+
+  <TK_ID>[bubble_sort](<TK_ID>[vec], <TK_INT_LITERAL>[0], <TK_ID>[n]);
+
+  <TK_WHILE> (<TK_ID>[n] > <TK_INT_LITERAL>[0])
+  {
+    <TK_IF> (!(<TK_ID>[vec][<TK_ID>[n] - <TK_INT_LITERAL>[1]] <TK_EQ> (<TK_ID>[n] - <TK_INT_LITERAL>[1])))
+    {
+      <TK_RETURN> -<TK_INT_LITERAL>[1];
+    }
+    <TK_ID>[n] = <TK_ID>[n] - <TK_INT_LITERAL>[1];
+  }
+
+  <TK_ID>[vec][<TK_INT_LITERAL>[0]] = <TK_INT_LITERAL>[7];
+  <TK_ID>[vec][<TK_INT_LITERAL>[1]] = <TK_INT_LITERAL>[3];
+  <TK_ID>[vec][<TK_INT_LITERAL>[2]] = <TK_INT_LITERAL>[4];
+  <TK_ID>[vec][<TK_INT_LITERAL>[3]] = <TK_INT_LITERAL>[8];
+  <TK_ID>[vec][<TK_INT_LITERAL>[4]] = <TK_INT_LITERAL>[6];
+  <TK_ID>[vec][<TK_INT_LITERAL>[5]] = <TK_INT_LITERAL>[5];
+  <TK_ID>[vec][<TK_INT_LITERAL>[6]] = <TK_INT_LITERAL>[2];
+  <TK_ID>[vec][<TK_INT_LITERAL>[7]] = <TK_INT_LITERAL>[0];
+  <TK_ID>[vec][<TK_INT_LITERAL>[8]] = <TK_INT_LITERAL>[9];
+  <TK_ID>[vec][<TK_INT_LITERAL>[9]] = <TK_INT_LITERAL>[1];
+
+  <TK_ID>[quick_sort](<TK_ID>[vec], <TK_INT_LITERAL>[0], <TK_ID>[n]);
+
+  <TK_WHILE> (<TK_ID>[n] > <TK_INT_LITERAL>[0])
+  {
+    <TK_IF> (!(<TK_ID>[vec][<TK_ID>[n] - <TK_INT_LITERAL>[1]] <TK_EQ> (<TK_ID>[n] - <TK_INT_LITERAL>[1])))
+    {
+      <TK_RETURN> -<TK_INT_LITERAL>[2];
+    }
+    <TK_ID>[n] = <TK_ID>[n] - <TK_INT_LITERAL>[1];
+  }
+
+  <TK_RETURN> <TK_INT_LITERAL>[0];
+}
